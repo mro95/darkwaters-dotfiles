@@ -1,57 +1,53 @@
-#! /bin/sh
+#!/bin/sh
 
 # Set path etc.
 source ~/.zshenv
 
 
-if xrandr -q | grep 'VGA1 connected'; then
-    feh --bg-fill ~/dotfiles/assets/background_portrait.png
-else
-    feh --bg-fill ~/dotfiles/assets/background_landscape.png
-fi &
-
-
 # Configure X environment
-compton &
+compton --dbus &
 xrdb ~/.Xresources &
 xsetroot -cursor_name left_ptr &
+feh --no-fehbg --bg-fill "$(ls wallpapers/* | shuf | head -n 1 )" --bg-fill "$(ls wallpapers/* | shuf | head -n 1 )" &
 panel &
 kb &
 for n in {8..12}; do xinput set-prop $n "Device Accel Constant Deceleration" 2.2; done & # I don't even care
 vpsnotifyc &
+urxvtd -f -o &
 
 # Run local .xenv
 source ~/.xenv
 
 sxhkd -f 60 &
 
-bspc config border_width        1
-bspc config window_gap         10
+bspc config border_width        3
+bspc config window_gap         25
+bspc config bottom_padding     25
 
-bspc config focused_border_color '#6D878D'
-bspc config active_border_color  '#102030'
-bspc config normal_border_color  '#1d1f21'
+bspc config focused_border_color '#2f3133'
+bspc config active_border_color  '#242628'
+bspc config normal_border_color  '#242628'
 bspc config urgent_border_color  '#ffaf00'
-bspc config presel_border_color  '#4e9fb1'
+bspc config presel_border_color  '#5a5c5e'
 
-bspc config split_ratio          0.52
-bspc config borderless_monocle   true
-bspc config gapless_monocle      true
-bspc config focus_by_distance    true
-bspc config focus_follows_cursor true
+bspc config split_ratio           0.50
+bspc config auto_cancel           true
+bspc config borderless_monocle    true
+bspc config gapless_monocle       true
+bspc config focus_by_distance     true
+bspc config focus_follows_pointer false
 
 monitors=( 'VGA1' 'HDMI1' 'LVDS1'  'HDMI-0' 'DVI-I-1' ) # order is important
 i=1
 for m in ${monitors[@]}; do
     if bspc query -M | grep "$m"; then
-        bspc monitor $m -d $i-{{1..9},0}
+        bspc monitor $m -d $i-{1..6}
         let i++
     fi
 done
 
-bspc rule -a Chromium desktop=1-2 border=off
+bspc rule -a chromium desktop=1-2 border=off
 bspc config -d 1-2 window_gap 0
-bspc config -d 1-2 bottom_padding 2
 
 bspc rule -a mplayer floating=on
 bspc rule -a mplayer2 floating=on

@@ -2,7 +2,7 @@ HISTFILE=~/.zhistory
 HISTSIZE=10000
 SAVEHIST=100000
 
-export PATH=~/dotfiles/bin:$PATH
+export PATH=~/bin:~/dotfiles/bin:$PATH
 
 setopt appendhistory autocd notify hist_ignore_all_dups hist_ignore_space
 unsetopt extendedglob nomatch beep
@@ -22,7 +22,7 @@ stty stop '' -ixon -ixoff
 test "$TERM" = "xterm" && export TERM=xterm-256color
 test "$TERM" = "screen" && export TERM=screen-256color
 
-export EDITOR=/usr/bin/vim
+export EDITOR=/usr/bin/nvim
 export GREP_COLOR='38;5;214;48;5;236'
 
 bindkey '\e[1;5D' emacs-backward-word
@@ -36,13 +36,13 @@ bindkey '\e[8~' end-of-line
 bindkey '\e[3~' delete-char
 
 
-if test -n "$(uname -a | grep -ie arch -e manjaro 2>/dev/null)"; then
-    alias get='yaourt -S'
-    alias search='yaourt -Ss'
-    alias show='yaourt -Si'
-    alias update='yaourt -Sy'
-    alias upgrade='yaourt -Syyuua'
-    alias remove='yaourt -R'
+if command -v pacaur > /dev/null; then
+    alias get='pacaur -S'
+    alias search='pacaur -Ss'
+    alias show='pacaur -Si'
+    alias update='pacaur -Sy'
+    alias upgrade='pacaur -Syu'
+    alias remove='pacaur -R'
 else
     alias get='sudo apt-get install'
     alias search='apt-cache search'
@@ -53,8 +53,6 @@ else
     alias purge='sudo apt-get purge'
 fi
 
-alias irssi="ssh nv -t 'screen -xUS irssi || screen -US irssi /usr/bin/irssi'"
-alias snv="ssh nv -t 'tmux a || tmux || /usr/bin/zsh'"
 alias nv="ssh nv" # 6 characters is too much!
 
 function startblog()
@@ -73,6 +71,12 @@ function ll()
         return
     fi
     $ls -halF --color=auto --group-directories-first $argv
+}
+
+function downloads()
+{
+    cd ~/downloads/
+    ls -hAlt --color=always | head -n 11 | tail | tac
 }
 
 
@@ -166,7 +170,3 @@ function git_prompt_info()
 
 
 source ~/dotfiles/zshplugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-uptime
-acpi 2>/dev/null
-df -h / /var /home /data 2>&- | uniq
