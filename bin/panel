@@ -1,84 +1,404 @@
 #!/usr/bin/env ruby
+require 'json'
 
 Thread.abort_on_exception = true
+Object.send :remove_const, :Monitor # I'll need this tyvm
 
-class Monitor
-    @monitors = []
-    @monitors_by_name = {}
+module Icon
+    { "\ue015" => :clock,
+      "\ue02e" => :information,
+      "\ue214" => :battery,
+      "\ue215" => :battery_charging,
+      "\ue01b" => :thermal,
+      "\ue0fd" => :music,
+      "\ue277" => :desktop_occupied,
+      "\ue278" => :desktop_free,
+      "\ue279" => :separator }
+    .each_pair do |char, name|
+        define_singleton_method(name) { char }
+    end
+end
 
-    def self.add(instance)
-        @monitors << instance
-        @monitors_by_name[instance.name] = instance
+module Color
+    { '#101010' => :black,
+      '#e84f4f' => :red,
+      '#b8d68c' => :green,
+      '#e1aa5d' => :yellow,
+      '#7dc1cf' => :blue,
+      '#9b64fb' => :magenta,
+      '#6d878d' => :cyan,
+      '#dddddd' => :white }
+    .each_pair do |color, name|
+        define_singleton_method(name) { color }
     end
 
-    def self.[](n)
-        case n
-        when Integer
-            @monitors[n]
-        when String
-            @monitors_by_name[n]
+    def self.blink(even, odd)
+        send (Time.now.to_i.even?) ? even : odd
+    end
+end
+
+module Util
+    def self.threshold(value, thresholds)
+        thresholds.to_a.reverse.each do |trip, out|
+            return out if value >= trip
         end
     end
+end
 
-    def self.all
-        @monitors
+module Bar
+    def self.color(arg = '-')
+        "%{F#{arg}}"
+    end
+end
+
+module Bspc
+    def self.tree
+        JSON.parse(`bspc query -T`, symbolize_names: true)[:monitors].map do |mobj|
+            Monitor.new mobj
+        end.sort
+    end
+end
+
+
+class JsonObject
+    def initialize(obj)
+        obj.each_pair do |key, value|
+            key = key.to_s.gsub(/[A-Z]/){ |c| "_#{c.downcase}" }.to_sym
+            instance_variable_set :"@#{key}", value
+            define_singleton_method(key) { instance_variable_get :"@#{key}" } unless respond_to? key
+        end
+    end
+end
+
+class Geometry
+    attr_reader :width, :height, :x, :y
+
+    def initialize(obj)
+        @width, @height, @x, @y = obj[:width], obj[:height], obj[:x], obj[:y]
     end
 
-    def self.each
-        @monitors.each { |m| yield m }
+    alias left x
+    alias top y
+
+    def right; left + width; end
+    def bottom; top + height; end
+
+    def area; width * height; end
+end
+
+class Padding
+    attr_reader :top, :right, :bottom, :left
+
+    def initialize(obj)
+        @top, @right, @bottom, @left = obj[:topPadding], mobj[:rightPadding], mobj[:bottomPadding], mobj[:leftPadding]
+    end
+end
+
+class Monitor < JsonObject
+    include Comparable
+
+    attr_reader :order, :geometry
+
+    def initialize(mobj)
+        super mobj
+
+        # Turn JSON hashes into Desktops
+        @desktops.map! do |dobj|
+            Desktop.new dobj, dobj[:name] == focused_desktop_name
+        end
+
+        # Rely on N-M desktop naming scheme for the Mth desktop on the Nth screen (1-indexed, eg. 1-2)
+        @order = @desktops.first.name[0].to_i - 1
+
+        @geometry = Geometry.new @rectangle
     end
 
-    def initialize(name, res, pos)
-        @name = name
-        @res = res.split 'x', 2
-        @pos = pos.split '+', 2
+    def <=>(other)
+        self.order <=> other.order
+    end
 
-        @res.map!(&:to_i)
-        @pos.map!(&:to_i)
+    def focused_desktop
+        @desktops.find{ |n| n.name == focused_desktop_name }
+    end
 
-        @desktops = []
-
-        Monitor.add self
-
-        # Rely on the 1-1, 1-2, 2-1, 2-2 desktop naming convention (monitor-desktop)
-        @order = `bspc query -m "#{name}" -D`[0].to_i - 1 # WARNING: FRAGILE (please work ;-;)
-
-        create_panel
+    def focused_window
+        focused_desktop.focused_window
     end
 
     %i| primary secondary tertiary quaternary quinary senary septenary octonary nonary denary |
     .each_with_index do |name, index|
         name_question = :"#{name}?"
 
-        define_singleton_method(name) { @monitors.find{ |n| n.send name_question } }
-        define_singleton_method(name_question) { @monitors.any?{ |n| n.send name_question } }
+        define_singleton_method(name) { Bspc.tree.find{ |n| n.send name_question } }
+        define_singleton_method(name_question) { Bspc.tree.any?{ |n| n.send name_question } }
         define_method(name_question) { @order == index }
     end
+end
 
-    def create_panel
-        @panel ||= Panel.new self
+class Desktop < JsonObject
+    attr_reader :windows, :active
+    alias active? :active
+
+    def initialize(dobj, active)
+        super dobj
+        @active = active
+
+        # Walk through desktop tree and collect a list of windows
+        pass = [ dobj[:root] ].reject(&:nil?)
+        newpass = nil
+        @windows = []
+
+        until pass.empty? do
+            newpass = []
+
+            pass.each do |node|
+                # Only add items if they're not nil
+                newpass += [ node[:firstChild], node[:secondChild] ].reject(&:nil?)
+                @windows += [ node[:client] ].reject(&:nil?)
+            end
+
+            pass = newpass
+        end
+
+        @windows.map! do |wobj|
+            Window.new wobj
+        end
     end
 
-    def active_window
-        `bspc query -m "#{name}" -T`
-            .lines                          # Split output by lines
-            .drop(1)                        # Drop the monitor line
-            .slice_before(/^\t\S/)          # Split by desktops
-            .find{ |n| n.first[/\*$/] }     # Find the active desktop
-            .drop(1)                        # Drop the desktop line
-            .find{ |n| n[/\*$/] }           # Find the active window
-            .split[3]                       # Get the window ID
+    def focused_window
+        @windows.find{ |n| n.window == @focused_window }
     end
 
-    attr_accessor :active
-    attr_reader :panel, :name, :desktops
-    def x; @pos[0] end
-    def y; @pos[1] end
-    def w; @res[0] end
-    def h; @res[1] end
+    def free?
+        @root == nil
+    end
 
-    def to_s
-        "Monitor #{@name} #{@res.join 'x'} #{@pos.join '+'}"
+    def urgent?
+        @windows.any?{ |n| n.urgent }
+    end
+end
+
+class Window < JsonObject
+end
+
+
+class Panel
+    def initialize(monitor)
+        @height = `bspc config -m "#{monitor.name}" bottom_padding`.to_i
+
+        @monitor_name = monitor.name
+        @bar = open "|lemonbar -g #{monitor.geometry.width}x#{@height}+#{monitor.geometry.left}" +
+                                "+#{monitor.geometry.bottom - @height}" +
+                             " -f '-misc-tamsyn-medium-r-normal--14-101-100-100-c-70-iso8859-1'" +
+                             " -f '-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1'" +
+                             " -B '#e61d1f21'", 'w+'
+
+        @bar_read_thread = Thread.new do
+            @bar.each_line{ |n| system n.chomp }
+        end
+
+        @drawing = false
+    end
+
+    def monitor
+        Bspc.tree.find{ |n| n.name == @monitor_name }
+    end
+
+    def space(n)
+        draw " " * n
+    end
+
+    def separator
+        draw " \ue279 "
+    end
+
+    def align(where)
+        draw "%{#{where.to_s[0]}}"
+    end
+
+    def desktops
+        draw '%{A4:bspc desktop -f prev:}'
+        draw '%{A5:bspc desktop -f next:}'
+
+        monitor.desktops.each do |desktop|
+            draw "%{A:bspc desktop -f #{desktop.name}:}"
+
+            draw desktop.active? ? "%{F#efefef}"
+               : desktop.urgent? ? "%{F#ffaf00}"
+                                 : "%{F#707070}"
+
+            draw desktop.free? ? Icon.desktop_free
+                               : Icon.desktop_occupied
+
+            draw " %{A}"
+        end
+
+        draw '%{A}%{A}'
+    end
+
+    def active_window_title
+        draw "%{F#efefef}#{`xtitle #{monitor.focused_window.window}`[0..70] rescue ''}"
+    end
+
+    def time
+        icon = Icon.clock
+        text = Time.now.strftime('%H:%M')
+        color = Util.threshold Time.now.hour,
+                 0 => Color.cyan,
+                 6 => Color.blue,
+                12 => Color.green,
+                18 => Color.yellow
+
+        draw_system icon, text, color
+    end
+
+    def notifications
+        draw Notifications.last.render rescue nil
+    end
+
+    def now_playing
+        mpc = `mpc 2>/dev/null`.lines
+        draw "#{Icon.music} #{mpc.first}" if mpc[1][/playing/] rescue nil
+    end
+
+    def battery
+        value = Battery.value
+        return if value.nil?
+
+        icon = Battery.charging? ? Icon.battery_charging : Icon.battery
+        text = "#{value}%"
+        color = Util.threshold value,
+                 0 => Color.blink(:red, :white),
+                10 => Color.red,
+                30 => Color.yellow,
+                50 => Color.green
+
+        draw_system icon, text, color
+    end
+
+    def thermal
+        sensor = Thermal.sensors['coretemp-isa-0000']
+        value  = sensor[:temp1_input]
+        high   = sensor[:temp1_max] - 15
+        max    = sensor[:temp1_max]
+        crit   = sensor[:temp1_crit]
+
+        icon  = Icon.thermal
+        text  = "#{value} °C"
+        color = Util.threshold value,
+                0    => Color.green,
+                high => Color.yellow,
+                max  => Color.red,
+                crit => Color.blink(:red, :white)
+
+        draw_system icon, text, color
+    end
+
+    def update
+        return if @drawing
+        @drawing = true
+        @use_separator = false
+        space 2
+
+        desktops
+        space 1
+        active_window_title
+
+        align :center
+        space 5
+
+        notifications if monitor.primary?
+        now_playing if monitor.secondary? || (!Monitor.secondary? && Notifications.empty?)
+
+        space 5
+        align :right
+
+        thermal
+        battery
+        time
+
+        space 2
+        @bar.write "\n"
+        @drawing = false
+    end
+
+    private
+
+    def draw(stuff)
+        @bar.write stuff.gsub "\n", ''
+    end
+
+    def draw_system(icon, text, color = '#ffffff')
+        return if icon.nil? || text.nil?
+
+        if @use_separator
+            separator
+        else
+            @use_separator = true
+        end
+
+        draw "#{Bar.color color}#{icon} #{text}#{Bar.color}"
+    end
+end
+
+
+module System
+    def update_if_needed
+        return if Time.now.to_f - @last_update < @update_interval
+
+        update
+        @last_update = Time.now.to_f
+    end
+end
+
+module Battery
+    extend System
+
+    @last_update = 0
+    @update_interval = 10
+
+    def self.update
+        value = `acpi -b 2>/dev/null`[/([0-9]+)%/, 1]
+
+        if value.nil?
+            @update_interval = 360
+            @value = nil
+        else
+            @value = value.to_i
+        end
+    end
+
+    def self.value
+        @value
+    end
+
+    def self.charging?
+        `acpi -a 2>/dev/null`['off-line'].nil?
+    end
+end
+
+module Thermal
+    extend System
+
+    @last_update = 0
+    @update_interval = 10
+
+    def self.update
+        raw = `sensors -uA`
+        chips = raw.lines.map(&:chomp).slice_after('')
+        @sensors = chips.map do |chip|
+            name = chip.first
+            values = chip.map do |line|
+                /^  (?<key>[a-z0-9_]+): (?<value>[0-9.,]+)/ =~ line
+                [ key.to_sym, value.to_f ] if $~
+            end.reject(&:nil?).to_h
+
+            [ name, values ]
+        end.to_h
+    end
+
+    def self.sensors
+        @sensors
     end
 end
 
@@ -119,160 +439,34 @@ module Notifications
         end
     end
 
-    def self.push(n)
-        @notifications << n
-    end
-
-    def self.pop
-        @notifications.pop
-    end
-
-    def self.last
-        @notifications.last
+    def self.method_missing(*args)
+        @notifications.send(*args)
     end
 end
 
-Notification = Struct.new :title, :body do
-    attr_accessor :timeout
+systems = [ Battery, Thermal ]
+systems.each(&:update)
 
-    def initialize(*args)
-        super(*args)
 
-        @timeout = 5
-    end
+panels = []
 
-    def render
-        "#{title} #{body}"
-    end
+Bspc.tree.each do |monitor|
+    panels << Panel.new(monitor)
 end
-
-class Panel
-    def initialize(monitor)
-        @height = `bspc config -m "#{monitor.name}" bottom_padding`.to_i
-
-        @monitor = monitor
-        @bar = open "|lemonbar -g #{monitor.w}x#{@height}+#{monitor.x}+#{monitor.y + monitor.h - @height}" +
-                             " -f 'Droid Sans Mono:size=8'" +
-                             " -f '-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1'" +
-                             " -B '#e61d1f21' -o 1", 'w+'
-
-        @bar_read_thread = Thread.new do
-            @bar.each_line{ |n| system n.chomp }
-        end
-
-        @drawing = false
-    end
-
-    def space(n)
-        draw " " * n
-    end
-
-    def align(where)
-        draw "%{#{where.to_s[0]}}"
-    end
-
-    def desktops
-        draw '%{A4:bspc desktop -f prev:}'
-        draw '%{A5:bspc desktop -f next:}'
-        draw @monitor.desktops.map{ |name, color| "%{A:bspc desktop -f #{name}:}%{F#{color}} %{A}" }.join
-        draw '%{A}%{A}'
-    end
-
-    def active_window_title
-        draw "%{F#efefef}#{`xtitle #{@monitor.active_window}` rescue ''}"
-    end
-
-    def time
-        draw Time.now.strftime '%H:%M'
-    end
-
-    def notifications
-        draw Notifications.last.render rescue nil
-    end
-
-    def now_playing
-        draw ''
-    end
-
-    def update
-        return if @drawing
-        @drawing = true
-        space 2
-
-        desktops
-        space 1
-        active_window_title
-
-        align :center
-        space 5
-
-        notifications if @monitor.primary?
-        now_playing if @monitor.secondary?
-
-        space 5
-        align :right
-
-        time
-
-        space 2
-        @bar.write "\n"
-        @drawing = false
-    end
-
-    private
-
-    def draw(stuff)
-        @bar.write stuff.gsub "\n", ''
-    end
-end
-
-
-`bspc query -T`.scan(/^\S.*$/) do |m|
-    /(?<name>\S+) (?<size>\d+x\d+)\+(?<pos>\d+\+\d+)/ =~ m
-    Monitor.new name, size, pos
-end
-
-Notifications.run
 
 
 threads = []
 
-# Update every second
-threads << Thread.new{ loop{ sleep 1; Monitor.each{ |n| n.panel.update } } }
+# Update panels every second
+threads << Thread.new{ loop{ panels.each(&:update); sleep 1 } }
 
-# Desktops
+# Update panels on desktop switch
 threads << Thread.new do
-    bspc = open '|bspc control --subscribe window', 'r'
-    bspc.each_line do |line|
-        case line[0]
-        when 'W'
-            monitor = nil
-
-            line[1..-1].split(':').each do |item|
-                name = item[1..-1]
-
-                case item[0]
-                when 'M', 'm'
-                    monitor = Monitor[name]
-                    monitor.active = item[0] == 'M'
-                    monitor.desktops.clear
-                when 'L' # layout; end of desktops
-                    monitor.panel.update
-                else
-                    colors = {
-                        'O' => '#edeff1', # occupied active
-                        'F' => '#5d5f61', # free active
-                        'o' => '#7d7f81', # occupied inactive
-                        'f' => '#3d3f41', # free inactive
-                        'u' => '#ffaf00', # urgent
-                        'U' => '#ffaf00'
-                    }
-
-                    monitor.desktops << [ name, colors[item[0]] ]
-                end
-            end
-        end
-    end
+    bspc = open '|bspc control --subscribe', 'r'
+    bspc.each_line do panels.each(&:update) end
 end
+
+# Update systems whenever needed
+threads << Thread.new{ loop{ systems.each(&:update_if_needed); sleep 1 } }
 
 sleep
