@@ -18,6 +18,7 @@ kb &
 dunst &
 vpsnotifyc &
 urxvtd -f -o &
+pulseaudio &
 
 # Run local .xenv
 source ~/.xenv
