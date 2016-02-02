@@ -117,5 +117,5 @@ ctrl + XF86Audio{Prev,Next}
 super + p
     music pick 5
 
-super + space
+super + l
     lock
