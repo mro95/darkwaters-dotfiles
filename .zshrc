@@ -4,6 +4,10 @@ SAVEHIST=100000
 
 export PATH=~/bin:~/dotfiles/bin:$PATH
 
+if command -v cope_path > /dev/null; then
+    export PATH=$(cope_path):$PATH
+fi
+
 setopt appendhistory autocd notify hist_ignore_all_dups hist_ignore_space
 unsetopt extendedglob nomatch beep
 
@@ -79,6 +83,11 @@ function downloads()
     ls -hAlt --color=always | head -n 11 | tail | tac
 }
 
+function fs()
+{
+    printf '\x1b]710;%s%d\x07' 'xft:Droid Sans Mono:size=' "$1"
+}
+
 
 if test "$TERM" = "linux"; then
     echo -en "\e]P01D1F21" # black
@@ -112,18 +121,21 @@ local return_code="%(?..%{$fg[red]%}%? ↵ %{$reset_color%})"
 local user_host='%{$fg[green]%}%n@%m%{$reset_color%}'
 local current_dir='%{$fg[blue]%}%~%{$reset_color%}'
 
-local git_branch='$(git_prompt_info)%{$reset_color%}'
-
-
 PROMPT='$(zsh_prompt)'
 RPROMPT="%(?..%{$fg[red]%}%? ! %{$reset_color%})%{$fg_bold[black]%}$(hostname)  %T%{$reset_color%}"
 
 
 function zsh_prompt()
 {
-    echo -en '%{\a%}'
+    window_title="${USER}@$(hostname): ${PWD}"
 
     local ref=$(git symbolic-ref HEAD 2> /dev/null)
+    local attached=true
+    if [[ -z "$ref" ]]; then
+        ref=$(git rev-parse --short HEAD 2> /dev/null)
+        attached=false
+    fi
+
     if [[ -n "$ref" ]]; then
 
         local repo="$(git rev-parse --show-toplevel)"
@@ -133,7 +145,9 @@ function zsh_prompt()
             cwd=$cwd/
         fi
 
-        if [[ "$(git status 2> /dev/null | tail -n1)" != "nothing to commit, working directory clean" ]]; then
+        if [[ "$attached" = false ]]; then
+            echo -n "%{$fg[red]%}"
+        elif [[ "$(git status 2> /dev/null | tail -n1)" != "nothing to commit, working directory clean" ]]; then
             echo -n "%{$fg[yellow]%}"
         else
             echo -n "%{$fg[green]%}"
@@ -141,6 +155,7 @@ function zsh_prompt()
 
         # Repository name @ branch
         echo -n "[${ref#refs/heads/}] $(basename "$repo")"
+        window_title="${window_title} [${ref#refs/heads/}]"
 
         # Internal path (relative to repository root)
         echo -n "%{$fg[blue]%}${cwd#$repo}"
@@ -154,18 +169,14 @@ function zsh_prompt()
 
     # Shell $ prompt sign
     echo -n " %{$reset_color%}$ "
+
+    # Bell and window title set
+    echo -n "%{\a\e]0;$window_title\a%}"
 }
 
-
-function git_prompt_info()
+function preexec()
 {
-    ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-    if [[ $((git status 2> /dev/null) | tail -n1) != "nothing to commit, working directory clean" ]]; then
-        echo -n "%{$fg[yellow]%}"
-    else
-        echo -n "%{$fg[green]%}"
-    fi
-    echo " [${ref#refs/heads/}]%{$reset_color%}"
+    echo -n "\e]0;${USER}@$(hostname): ${PWD} $ $2\a"
 }
 
 

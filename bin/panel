@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 require 'json'
+require 'socket'
 
 Thread.abort_on_exception = true
 Object.send :remove_const, :Monitor # I'll need this tyvm
 
 module Icon
-    { "\ue015" => :clock,
+    { "\ue00b" => :bluetooth,
+      "\ue015" => :clock,
       "\ue01b" => :thermal,
       "\ue026" => :load,
       "\ue028" => :memory,
@@ -57,7 +59,7 @@ end
 
 module Bspc
     def self.tree
-        JSON.parse(`bspc query -T`, symbolize_names: true)[:monitors].map do |mobj|
+        JSON.parse(`bspc wm -d`, symbolize_names: true)[:monitors].map do |mobj|
             Monitor.new mobj
         end.sort
     end
@@ -68,7 +70,8 @@ class JsonObject
     def initialize(obj)
         obj.each_pair do |key, value|
             key = key.to_s.gsub(/[A-Z]/){ |c| "_#{c.downcase}" }.to_sym
-            instance_variable_set :"@#{key}", value
+            ivname = :"@#{key}"
+            instance_variable_set ivname, value unless instance_variable_defined? ivname
             define_singleton_method(key) { instance_variable_get :"@#{key}" } unless respond_to? key
         end
     end
@@ -125,8 +128,8 @@ class Monitor < JsonObject
         @desktops.find{ |n| n.name == focused_desktop_name }
     end
 
-    def focused_window
-        focused_desktop.focused_window
+    def focused_node
+        focused_desktop.focused_node
     end
 
     %i| primary secondary tertiary quaternary quinary senary septenary octonary nonary denary |
@@ -140,17 +143,17 @@ class Monitor < JsonObject
 end
 
 class Desktop < JsonObject
-    attr_reader :windows, :active
+    attr_reader :nodes, :active
     alias active? :active
 
     def initialize(dobj, active)
         super dobj
         @active = active
 
-        # Walk through desktop tree and collect a list of windows
+        # Walk through desktop tree and collect a list of nodes
         pass = [ dobj[:root] ].reject(&:nil?)
         newpass = nil
-        @windows = []
+        @nodes = []
 
         until pass.empty? do
             newpass = []
@@ -158,19 +161,19 @@ class Desktop < JsonObject
             pass.each do |node|
                 # Only add items if they're not nil
                 newpass += [ node[:firstChild], node[:secondChild] ].reject(&:nil?)
-                @windows += [ node[:client] ].reject(&:nil?)
+                @nodes  += [ node ] if node[:client]
             end
 
             pass = newpass
         end
 
-        @windows.map! do |wobj|
-            Window.new wobj
+        @nodes.map! do |wobj|
+            Node.new wobj
         end
     end
 
-    def focused_window
-        @windows.find{ |n| n.window == @focused_window }
+    def focused_node
+        @nodes.find{ |n| n.id == @focused_node_id }
     end
 
     def free?
@@ -178,15 +181,21 @@ class Desktop < JsonObject
     end
 
     def urgent?
-        @windows.any?(&:urgent)
+        @nodes.any?{ |n| n.client.urgent }
     end
 
     def fullscreen?
-        @windows.any?{ |n| n.state == 'fullscreen' }
+        @nodes.any?{ |n| n.client.state == 'fullscreen' }
     end
 end
 
-class Window < JsonObject
+class Node < JsonObject
+    attr_reader :client
+
+    def initialize(nobj)
+        super nobj
+        @client = JsonObject.new client
+    end
 end
 
 
@@ -196,7 +205,7 @@ class Panel
 
         @monitor_name = monitor.name
         @bar = open "|lemonbar -g #{monitor.geometry.width}x#{@height}+#{monitor.geometry.left}" +
-                                "+#{monitor.geometry.bottom - @height}" +
+                                "+#{monitor.geometry.height - @height}" +
                              " -f '-misc-tamsyn-medium-r-normal--14-101-100-100-c-70-iso8859-1'" +
                              " -f '-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1'" +
                              " -B '#eb1d1f21'", 'w+'
@@ -251,7 +260,7 @@ class Panel
         # - 10: compensate for desktop icons
         max_width = monitor.geometry.width
         max_width = max_width / 2 / 7 - 10 if limit_width
-        draw "%{F#efefef}#{`xtitle #{monitor.focused_window.window}`[0..max_width] rescue ''}"
+        draw "%{F#efefef}#{`xtitle #{monitor.focused_node.id}`[0..max_width] rescue ''}"
     end
 
     def time(show_date = false)
@@ -267,8 +276,24 @@ class Panel
     end
 
     def now_playing
-        mpc = `mpc 2>/dev/null`.lines
-        draw "#{Icon.music} #{mpc.first}" if mpc[1][/playing/] rescue nil
+        return unless Music.state =~ /playing|paused/
+
+        artist = Music.artist
+        title = Music.title
+
+        icon  = Icon.music
+        text  = "#{artist} - #{title}"
+        color = (Music.state == 'playing') ? Color.green : Color.yellow
+
+        draw_system icon, text, color
+    end
+
+    def bluetooth
+        icon  = Icon.bluetooth
+        text  = ''
+        color = Color.blue
+
+        draw_system icon, text, color
     end
 
     def battery
@@ -365,7 +390,7 @@ class Panel
         draw '%{B-}'
         space 2
 
-        show_now_playing = `mpc 2>/dev/null`['[playing]'] && monitor.secondary? || !Monitor.secondary?
+        show_now_playing = monitor.secondary? || !Monitor.secondary?
 
         desktops
         space 1
@@ -384,6 +409,7 @@ class Panel
         space 20
 
         if monitor.secondary? || !Monitor.secondary?
+            bluetooth if Bluetooth.connected
             net_down
             net_up
             loadavg
@@ -414,7 +440,7 @@ class Panel
             @use_separator = true
         end
 
-        draw "#{Bar.color color}#{icon} #{text}#{Bar.color}"
+        draw "#{Bar.color color}#{icon}#{' ' if text.to_s.length > 0}#{text}#{Bar.color}"
     end
 end
 
@@ -550,6 +576,37 @@ module Memory
     end
 end
 
+module Bluetooth
+    include System
+
+    @last_update = 0
+    @update_interval = 2
+
+    system_reader :connected
+
+    def self.update
+        @connected = `hcitool con`.lines.count > 1
+    end
+end
+
+module Music
+    include System
+
+    @last_update = 0
+    @update_interval = 1
+
+    system_reader :artist, :album, :title, :state
+
+    def self.update
+        s = TCPSocket.new 'localhost', 5704
+        json = s.gets
+        data = JSON.parse json
+        data.each do |key, value|
+            instance_variable_set :"@#{key}", value
+        end
+    end
+end
+
 System.systems.each(&:update)
 
 
@@ -567,7 +624,7 @@ threads << Thread.new{ loop{ panels.each(&:update); sleep 1 } }
 
 # Update panels on desktop switch
 threads << Thread.new do
-    bspc = open '|bspc control --subscribe', 'r'
+    bspc = open '|bspc subscribe', 'r'
     bspc.each_line do panels.each(&:update) end
 end
 

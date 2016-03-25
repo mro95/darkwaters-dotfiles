@@ -1,13 +1,13 @@
 """"""""""""
 "" Neovim configuration
 "" Assembled by Darkwater
-"" 90% stolen from other people
+"" 50% stolen from other people
 ""
 
 call plug#begin()
 
 " UI plugins
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTree' }
 Plug 'majutsushi/tagbar',   { 'on': 'Tagbar'   }
 
@@ -19,15 +19,22 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-commentary'
 Plug 'benekastah/neomake'
 Plug 'godlygeek/tabular'
+Plug 'octol/vim-cpp-enhanced-highlight'
+
+" Miscellaneous shit
+Plug 'vim-scripts/JavaDecompiler.vim'
+Plug 'moll/vim-bbye'
+Plug 'mhinz/vim-startify'
 
 " Extra syntax support
-Plug 'hail2u/vim-css3-syntax',            { 'for': 'css'    }
-Plug 'dag/vim-fish',                      { 'for': 'fish'   }
-Plug 'tikhomirov/vim-glsl',               { 'for': 'glsl'   }
-Plug 'tfnico/vim-gradle',                 { 'for': 'gradle' }
-Plug 'othree/html5.vim',                  { 'for': 'html'   }
-Plug 'groenewege/vim-less',               { 'for': 'less'   }
-Plug 'derekwyatt/vim-scala',              { 'for': 'scala'  }
+Plug 'hail2u/vim-css3-syntax'
+Plug 'dag/vim-fish'
+Plug 'tikhomirov/vim-glsl'
+Plug 'tfnico/vim-gradle'
+Plug 'othree/html5.vim'
+Plug 'groenewege/vim-less'
+Plug 'derekwyatt/vim-scala'
+Plug 'udalov/kotlin-vim'
 
 call plug#end()
 
@@ -38,7 +45,7 @@ call plug#end()
 
 set cursorline
 set hidden
-set nohlsearch
+set hlsearch
 set ignorecase
 set incsearch
 set list
@@ -69,7 +76,8 @@ set pastetoggle=<F11>
 set scrolloff=5
 set showtabline=2
 set tabline=%!MyTabLine()
-set textwidth=80
+set tags+=.tags
+set textwidth=120
 set timeoutlen=400
 set undolevels=1000
 set updatetime=1500
@@ -85,7 +93,7 @@ set expandtab
 set shiftwidth=4
 set tabstop=4
 
-colors Tomorrow-Night
+colors tomorrow-night
 syntax on
 filetype plugin indent on
 
@@ -94,17 +102,71 @@ filetype plugin indent on
 "" Plugin configuration
 ""
 
-let NERDTreeChDirMode=3
-let NERDTreeIgnore=['.hex$', '.lst$', '\~$']
-
-let g:gitgutter_sign_added            = '+'
-let g:gitgutter_sign_modified         = '~'
-let g:gitgutter_sign_modified_removed = '~.'
+" Gitgutter
+let g:gitgutter_sign_added            = '•'
+let g:gitgutter_sign_modified         = '•'
+let g:gitgutter_sign_modified_removed = '•'
 let g:gitgutter_sign_removed          = '_'
+hi GitGutterChangeDelete ctermfg=3 cterm=underline
+hi GitGutterDelete       ctermfg=1 cterm=underline
 
-let g:neomake_error_sign = { 'text': ' ❯', 'texthl': 'ErrorMsg' }
-let g:neomake_open_list = 2 " Preserve cursor position when window is opened
+" Neomake
+let g:neomake_error_sign  = { 'text': ' ❯', 'texthl': 'ErrorMsg' }
+let g:neomake_open_list   = 2 " Preserve cursor position when window is opened
 let g:neomake_list_height = 5
+
+" CtrlP
+let g:ctrlp_cmd = 'CtrlPCurWD'
+
+" Startify
+let g:startify_default_custom_header = [ '                      -`                     ',
+                                       \ '                     .o+`                    ',
+                                       \ '                    `ooo/                    ',
+                                       \ '                   `+oooo:                   ',
+                                       \ '                  `+oooooo:                  ',
+                                       \ '                  -+oooooo+:                 ',
+                                       \ '                `/:-:++oooo+:                ',
+                                       \ '               `/++++/+++++++:               ',
+                                       \ '              `/++++++++++++++:              ',
+                                       \ '             `/+++ooooooooooooo/`            ',
+                                       \ '            ./ooosssso++osssssso+`           ',
+                                       \ '           .oossssso-````/ossssss+`          ',
+                                       \ '          -osssssso.      :ssssssso.         ',
+                                       \ '         :osssssss/        osssso+++.        ',
+                                       \ '        /ossssssss/        +ssssooo/-        ',
+                                       \ '      `/ossssso+/:-        -:/+osssso+-      ',
+                                       \ '     `+sso+:-`                 `.-/+oso:     ',
+                                       \ '    `++:.                           `-/+/    ',
+                                       \ '    .`                                 `/    ',
+                                       \ '',
+                                       \ '',
+                                       \ '' ]
+
+let g:startify_custom_header = g:startify_default_custom_header
+
+let g:startify_bookmarks = [ { '.c': '~/.config/' },
+                           \ { '.j': '~/.js/' },
+                           \ { '  ': '' },
+                           \ { 've': '~/.nvimenv' },
+                           \ { 'vi': '~/.config/nvim/init.vim' },
+                           \ { 'vc': '~/.config/nvim/colors/tomorrow-night.vim' },
+                           \ { '  ': '' },
+                           \ { 'pd': '~/dotfiles/' } ]
+
+let g:startify_change_to_dir      = 0
+let g:startify_change_to_vcs_root = 1
+let g:startify_files_number       = 20
+
+let g:startify_list_order = [ [ '  Sessions' ],
+                            \ 'sessions',
+                            \ [ '  Bookmarks' ],
+                            \ 'bookmarks',
+                            \ [ '  MRU' ],
+                            \ 'dir' ]
+
+hi StartifyBracket ctermfg=0 cterm=bold
+hi StartifyHeader  ctermfg=195
+
 
 """""""""""""
 "" Autocmds
@@ -117,10 +179,16 @@ augroup Vimrc
     " Cursor line highlighting in ruby is slow as hell :<
     autocmd BufNewFile,BufRead,BufEnter *.rb set nocursorline
 
-    autocmd BufReadPost,BufEnter,BufWritePost * Neomake
+    " Automatic syntax checking
+    " autocmd BufReadPost,BufEnter,BufWritePost * Neomake
 
-    autocmd BufWinLeave * mkview
+    " Automatically save and load view data (cursor position, folds...)
+    autocmd BufWinLeave * silent! mkview
     autocmd BufWinEnter * silent! loadview
+
+    " Run Startify when opening a directory
+    autocmd VimEnter          * silent! autocmd! FileExplorer
+    autocmd VimEnter,BufEnter * call OpenStartifyInDirectory(expand('<amatch>'))
 
 augroup end
 
@@ -129,28 +197,18 @@ augroup end
 "" Mappings
 ""
 
-" Fix Ctrl+arrows in urxvt for all modes(???)
-map         <silent> Ïa         <C-Up>
-map         <silent> Ïb         <C-Down>
-map         <silent> Ïc         <C-Right>
-map         <silent> Ïd         <C-Left>
-map!        <silent> Ïa         <C-Up>
-map!        <silent> Ïb         <C-Down>
-map!        <silent> Ïc         <C-Right>
-map!        <silent> Ïd         <C-Left>
-
 " ^S for save
-nnoremap    <silent> <C-s>      :write<CR>
-vnoremap    <silent> <C-s>      <C-O>:write<CR>
-inoremap    <silent> <C-s>      <C-O>:write<CR>
+nnoremap    <silent> <C-s>      :w<CR>
+vnoremap    <silent> <C-s>      <C-c>:w<CR>
+inoremap    <silent> <C-s>      <C-c>:w<CR>
 
 " ^J/^K for tab switching
 nnoremap    <silent> <C-k>      :bn<CR>
 nnoremap    <silent> <C-j>      :bp<CR>
 
 " ^X to close the current buffer
-nnoremap    <silent> <C-x>      :bp<bar>sp<bar>bn<bar>bd!<CR>
-vnoremap    <silent> <C-x>      <C-c>:bp<bar>sp<bar>bn<bar>bd!<CR>
+nnoremap    <silent> <C-x>      :Bdelete<CR>
+vnoremap    <silent> <C-x>      <C-c>:Bdelete<CR>
 
 " ^Q for :q!
 nnoremap    <silent> <C-q>      :q!<CR>
@@ -162,81 +220,75 @@ vnoremap    <silent> <Home>     ^
 inoremap    <silent> <Home>     <C-o>^
 
 " ^G to jump to a tag
-nnoremap    <silent> <C-g>      :tag /^
-vnoremap    <silent> <C-g>      <C-c>:tag /^
-inoremap    <silent> <C-g>      <C-c>:tag /^
+nnoremap    <silent> <C-g>      :tag /\C^
+vnoremap    <silent> <C-g>      <C-c>:tag /\C^
+inoremap    <silent> <C-g>      <C-c>:tag /\C^
 
 " Easily jump to command line
-nnoremap    <silent> ;          :
-vnoremap    <silent> ;          :
-nnoremap    <silent> ;;         :
-vnoremap    <silent> ;;         :
-inoremap    <silent> ;;         <C-C>:
+nnoremap    <silent> \          :
+vnoremap    <silent> \          :
 
 " Tab for autocompletion
 inoremap    <expr>   <Tab>      InsertTabWrapper()
 inoremap    <silent> <S-Tab>    <C-p>
 
-" {}| to {\n|\n} (^Z to undo)
-inoremap    <silent> {}         <CR>{<CR>}<Up><CR>
-inoremap    <silent> <C-z>      <BS><Down><BS><BS>{}<BS><BS>{}
-
 " Make Y consistent with D and C
 nnoremap    <silent> Y          y$
 
-" Use ^E/^Y in insert mode directly
-inoremap    <silent> <C-e>      <C-x><C-e>
-inoremap    <silent> <C-y>      <C-x><C-y>
+" Navigate through quickfix list
+nnoremap    <silent> [q         :cp<CR>
+nnoremap    <silent> ]q         :cn<CR>
 
-" F# for buffer switching
-nnoremap    <silent> <F1>       :1b<CR>
-inoremap    <silent> <F1>       <C-c>:1b<CR>
-let i = 2
-while i <= 12
-    execute "nnoremap <silent> <F" . i . "> :1b\\|" . (i - 1) . "bn<CR>"
-    execute "inoremap <silent> <F" . i . "> <C-c>:1b\\|" . (i - 1) . "bn<CR>"
-    let i += 1
-endwhile
+" Remove hlsearch
+nnoremap    <silent> <BS>       :nohlsearch<CR>
 
 
 """"""""""""""""""""
 "" Leader mappings
 ""
 
-let mapleader = ","
+let mapleader = "\<Space>"
 
-" Gradle
-nnoremap <leader>gid :!gradle --daemon installDebug<CR>
-
-" C++
-nnoremap <leader>ch :call SplitHeader()<CR>
-nnoremap <leader>ct :let x = system('ctags -R --language-force=C++ --sort=yes --c++-kinds=+p --fields=+iaS --extra=+q .')<CR>
-
-" File
-nnoremap <leader>fr :call RenameFile()<CR>
+" Startify
+nnoremap <silent> <leader>s  :Startify<CR>
 
 " Terminal
-nnoremap <leader>tt :terminal<CR>
-nnoremap <leader>tr :sp term://./%<CR>a
-nnoremap <leader>ts :sp term://
-nnoremap <leader>tv :vsp term://
+nnoremap <silent> <leader>t  :call jobstart(['urxvtc', '-cd', getcwd()])<CR>
 
-" Java
-nnoremap <leader>jt :let x = system('ctags -R --language-force=Java --sort=yes --fields=+iaS --extra=+q .')<CR>
+" C++
+nnoremap <silent> <leader>ch :call SplitHeader()<CR>
+
+" Devdocs
+nnoremap <silent> <leader>dd :call jobstart(['chromium-app', 'http://devdocs.io/' . &filetype])<CR>
+
+" File operations
+nnoremap <silent> <leader>fd :!rm %<CR>
+nnoremap <silent> <leader>fr :call RenameFile()<CR>
+
+" Generate tags
+nnoremap <silent> <leader>gt :call jobstart(['ctags', '-R', '-f.tags', '.'])<CR>
+
+" Markdown
+nnoremap <silent> <leader>mp :call jobstart(['md', expand('%')])<CR>
+
 
 """"""""""""""""""""""""
 "" Binary file editing
 ""
 augroup Binary
 
-    au!
-    au BufReadPre  *.bin let &bin=1
-    au BufReadPost *.bin if &bin | %!xxd
-    au BufReadPost *.bin set ft=xxd | endif
-    au BufWritePre *.bin if &bin | %!xxd -r
-    au BufWritePre *.bin endif
-    au BufWritePost *.bin if &bin | %!xxd
-    au BufWritePost *.bin set nomod | endif
+    autocmd!
+
+    autocmd BufReadPre   *.bin let &bin=1
+
+    autocmd BufReadPost  *.bin if &bin | %!xxd
+    autocmd BufReadPost  *.bin set ft=xxd | endif
+
+    autocmd BufWritePre  *.bin if &bin | %!xxd -r
+    autocmd BufWritePre  *.bin endif
+
+    autocmd BufWritePost *.bin if &bin | %!xxd
+    autocmd BufWritePost *.bin set nomod | endif
 
 augroup end
 
@@ -403,10 +455,73 @@ function! RenameFile()
 endfunction
 
 
+" Run Startify when opening a directory
+function! OpenStartifyInDirectory(dir)
+    if a:dir != '' && isdirectory(a:dir)
+        cd `=a:dir`
+
+        let g:startify_list_order = [ [ '  MRU ' . getcwd() ],
+                                    \ 'dir',
+                                    \ [ '  Bookmarks' ],
+                                    \ 'bookmarks',
+                                    \ [ '  Sessions' ],
+                                    \ 'sessions' ]
+
+        if isdirectory('.git')
+            let g:startify_custom_header = map(split(system('git status -b'), '\n'), '"  ". v:val')
+                                       \ + [ '' ]
+                                       \ + [ '' ]
+        else
+            let g:startify_custom_header = g:startify_default_custom_header
+        endif
+
+        Bdelete
+        Startify
+    endif
+endfunction
+
+
 """"""""""""""""""
 "" Local rc file
 ""
 
-if filereadable("./.vimlocalrc")
-    source ./.vimlocalrc
+if filereadable($HOME . "/.nvimenv")
+    source $HOME/.nvimenv
 endif
+
+" Example template for convenient copypasta:
+"
+" " Machine-local Neovim configuration
+"
+" function! SetupEnvironment()
+"     let l:path = expand('%:p')
+"     if l:path =~ '/home/dark/projects/almanapp-android/'
+"
+"         let &makeprg='./build.rb'
+"         let &errorformat='%A%.%#/home/dark/projects/almanapp-android/%f:%l:\ %m,%-Z%p^,%.%#%t:\ /home/dark/projects/almanapp-android/%f:\ (%l\,\ %c):\ %m,%-G%.%#'
+"         nnoremap <leader><leader> :make build debug --run<CR>
+"
+"         let g:ctrlp_custom_ignore = '\v/(build|cache|gradle)/'
+"
+"     elseif l:path =~ '/home/dark/projects/aegis/'
+"
+"         let &makeprg='./gradlew --daemon'
+"         let &errorformat='%.%#%t:\ /home/dark/projects/aegis/%f:\ (%l\,\ %c):\ %m,%-G%.%#'
+"         nnoremap <leader><leader> :make instalLDebug<CR>
+"
+"         let g:ctrlp_custom_ignore = '\v/(build|cache|gradle)/'
+"
+"     endif
+" endfunction
+"
+" augroup SetupEnvironment
+"
+"     autocmd!
+"
+"     autocmd BufReadPost,BufNewFile * call SetupEnvironment()
+"
+" augroup end
+"
+" let g:startify_bookmarks += [ { 'ag': '~/projects/aegis/build.gradle' } ]
+"
+" " vim: set ft=vim:
