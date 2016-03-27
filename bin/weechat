@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ssh nv -t 'screen -xUS weechat || screen -US weechat /usr/bin/weechat'

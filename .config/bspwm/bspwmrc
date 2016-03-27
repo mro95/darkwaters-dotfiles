@@ -29,7 +29,7 @@ sxhkd -f 60 &
 
 bspc config border_width        3
 bspc config window_gap         25
-bspc config bottom_padding     25
+bspc config top_padding     25
 
 bspc config focused_border_color '#2f3133'
 bspc config active_border_color  '#242628'

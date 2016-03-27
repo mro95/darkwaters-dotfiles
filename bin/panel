@@ -201,13 +201,13 @@ end
 
 class Panel
     def initialize(monitor)
-        @height = `bspc config -m "#{monitor.name}" bottom_padding`.to_i
+        @height = `bspc config -m "#{monitor.name}" top_padding`.to_i
 
         @monitor_name = monitor.name
         @bar = open "|lemonbar -g #{monitor.geometry.width}x#{@height}+#{monitor.geometry.left}" +
-                                "+#{monitor.geometry.bottom - @height}" +
-                             " -f 'Droid Sans Mono:size=10'" +
-                             " -f '-wuncon-siji-medium-r-normal--10-*-*-*-*-*-*'" +
+                                "+0" +
+                             " -f 'Droid Sans:size=10'" +
+                             " -f '-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1'" +
                              " -B '#eb1d1f21'", 'w+'
 
         @bar_read_thread = Thread.new do
@@ -598,6 +598,8 @@ module Music
     system_reader :artist, :album, :title, :state
 
     def self.update
+    end
+    def self.update2
         s = TCPSocket.new 'localhost', 5704
         json = s.gets
         data = JSON.parse json
