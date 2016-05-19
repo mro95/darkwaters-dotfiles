@@ -111,7 +111,7 @@ class Monitor < JsonObject
 
         # Turn JSON hashes into Desktops
         @desktops.map! do |dobj|
-            Desktop.new dobj, dobj[:name] == focused_desktop_name
+            Desktop.new dobj, dobj[:id] == focused_desktop_id
         end
 
         # Rely on N-M desktop naming scheme for the Mth desktop on the Nth screen (1-indexed, eg. 1-2)
@@ -125,7 +125,7 @@ class Monitor < JsonObject
     end
 
     def focused_desktop
-        @desktops.find{ |n| n.name == focused_desktop_name }
+        @desktops.find{ |n| n.id == focused_desktop_id }
     end
 
     def focused_node
@@ -211,7 +211,13 @@ class Panel
                              " -B '#eb1d1f21'", 'w+'
 
         @bar_read_thread = Thread.new do
-            @bar.each_line{ |n| system n.chomp }
+            @bar.each_line do |n|
+                if n.chomp == 'QUIT'
+                    exit
+                end
+
+                system n.chomp
+            end
         end
 
         @drawing = false
@@ -380,15 +386,12 @@ class Panel
     def update
         return if @drawing
 
-        if monitor.focused_desktop.fullscreen?
-            @bar.write "%{B#00000000}\n"
-            return
-        end
-
         @drawing = true
         @use_separator = false
         draw '%{B-}'
+        draw '%{A2:QUIT:}'
         space 2
+        draw '%{A}'
 
         show_now_playing = monitor.secondary? || !Monitor.secondary?
 

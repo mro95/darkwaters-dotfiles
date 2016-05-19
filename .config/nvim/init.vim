@@ -19,8 +19,10 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-commentary'
 Plug 'benekastah/neomake'
 Plug 'godlygeek/tabular'
-Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'idanarye/vim-dutyl'
+
+" Specific language enhancers
+Plug 'idanarye/vim-dutyl',  { 'for': 'd'   }
+Plug 'lervag/vimtex',       { 'for': 'tex' }
 
 " Miscellaneous shit
 Plug 'vim-scripts/JavaDecompiler.vim'
@@ -36,6 +38,7 @@ Plug 'othree/html5.vim'
 Plug 'groenewege/vim-less'
 Plug 'derekwyatt/vim-scala'
 Plug 'udalov/kotlin-vim'
+Plug 'octol/vim-cpp-enhanced-highlight'
 
 call plug#end()
 
@@ -168,6 +171,10 @@ let g:startify_list_order = [ [ '  Sessions' ],
 hi StartifyBracket ctermfg=0 cterm=bold
 hi StartifyHeader  ctermfg=195
 
+" Vimtex
+let g:tex_flavor = 'latex'
+let g:vimtex_enabled = 1
+
 
 """""""""""""
 "" Autocmds
@@ -214,19 +221,15 @@ nnoremap    <silent> <C-j>      :bp<CR>
 nnoremap    <silent> <C-x>      :Bdelete<CR>
 vnoremap    <silent> <C-x>      <C-c>:Bdelete<CR>
 
-" ^Q for :q!
-nnoremap    <silent> <C-q>      :q!<CR>
-vnoremap    <silent> <C-q>      <C-c>:q!<CR>
-
 " <Home> ignores leading whitespace
 nnoremap    <silent> <Home>     ^
 vnoremap    <silent> <Home>     ^
 inoremap    <silent> <Home>     <C-o>^
 
 " ^G to jump to a tag
-nnoremap    <silent> <C-g>      :tselect
-vnoremap    <silent> <C-g>      <C-c>:tselect
-inoremap    <silent> <C-g>      <C-c>:tselect
+nnoremap    <silent> <C-g>      :tselect /\C^
+vnoremap    <silent> <C-g>      <C-c>:tselect /\C^
+inoremap    <silent> <C-g>      <C-c>:tselect /\C^
 
 " Easily jump to command line
 nnoremap    <silent> \          :
@@ -252,6 +255,7 @@ nnoremap    <silent> <BS>       :nohlsearch<CR>
 ""
 
 let mapleader = "\<Space>"
+let maplocalleader = "\<Space>"
 
 " Build with make by default
 nnoremap <silent> <leader><leader> :make<CR>
@@ -262,9 +266,6 @@ nnoremap <silent> <leader>s  :Startify<CR>
 " Terminal
 nnoremap <silent> <leader>t  :call jobstart(['urxvtc', '-cd', getcwd()])<CR>
 
-" C++
-nnoremap <silent> <leader>ch :call SplitHeader()<CR>
-
 " Devdocs
 nnoremap <silent> <leader>dd :call jobstart(['chromium-app', 'http://devdocs.io/' . &filetype])<CR>
 
@@ -273,7 +274,7 @@ nnoremap <silent> <leader>fd :!rm %<CR>
 nnoremap <silent> <leader>fr :call RenameFile()<CR>
 
 " Generate tags
-nnoremap <silent> <leader>gt :call jobstart(['ctags', '-R', '-f.tags', '.'])<CR>
+nnoremap <silent> <leader>gt :call jobstart(['ctags', '-R', '.'])<CR>
 
 " Markdown
 nnoremap <silent> <leader>mp :call jobstart(['md', expand('%')])<CR>
@@ -305,70 +306,75 @@ augroup end
 "" Functions
 ""
 
-" Open header files in a vsplit
-function! SplitHeader()
-    let mainwin = winnr()
-
-    if winnr('$') == 1
-        80vsplit
-    endif
-
-    let h = expand('%:r').'.h'
-
-    wincmd l
-    if winnr() == mainwin
-        80vsplit
-    endif
-
-    exec 'e '.h
-    wincmd p
-endfunction
-
+hi TabLine              ctermfg=242 ctermbg=none cterm=none
+hi TabLineInactive      ctermfg=240 ctermbg=none cterm=none
+hi TabLineInactiveBold  ctermfg=243 ctermbg=none cterm=bold
+hi TabLineActive        ctermfg=252 ctermbg=none cterm=none
+hi TabLineActiveBold    ctermfg=255 ctermbg=none cterm=bold
+hi TabLineModified      ctermfg=214 ctermbg=none cterm=bold
 
 " Custom tab line function
 function! CustomTabLine()
-  let s = ''
-  for i in range(tabpagenr('$'))
-    " select the highlighting
-    if i + 1 == tabpagenr()
-      let s .= '%#TabLineSel#'
-    else
-      let s .= '%#TabLine#'
+    let s = '%#TabLine# '
+
+    let numtabs = tabpagenr('$')
+    if numtabs > 1
+        let s .= numtabs . ' tabs! (Only one supported) '
     endif
 
-    " set the tab page number (for mouse clicks)
-    let s .= '%' . (i + 1) . 'T'
+    let listedbufs = {}
+    let listedbufi = 1
 
-    " the label is made by CustomTabLabel()
-    let s .= ' %{CustomTabLabel(' . (i + 1) . ')} '
-  endfor
+    for n in filter(range(1, bufnr('$')), 'buflisted(v:val)')
+        let listedbufs[n] = listedbufi
+        let listedbufi += 1
 
-  " after the last tab fill with TabLineFill and reset tab page nr
-  let s .= '%#TabLineFill#%T'
+        " TODO: Handle cases > 9
 
-  " right-align the label to close the current tab page
-  if tabpagenr('$') > 1
-    let s .= '%=%#TabLine#%999Xclose'
-  endif
+        let bufname  = substitute(bufname(n), $HOME, '~', '')
+        let dirpath  = substitute(bufname, '[^/]\+/\?$', '', '')
+        let filename = strpart(bufname, strlen(dirpath))
 
-  return s
-endfunction
+        let hilight     = (n == bufnr('')) ? '%#TabLineActive#'     : '%#TabLineInactive#'
+        let hilightbold = (n == bufnr('')) ? '%#TabLineActiveBold#' : '%#TabLineInactiveBold#'
 
+        let leftbound  = ''
+        let rightbound = '  '
 
-" Custom tab label function
-function! CustomTabLabel(n)
-  let s = ''
-  let buflen = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
-  if buflen > 1
-    let s .= len(filter(range(1, bufnr('%')), 'buflisted(v:val)')) . ' / ' . buflen . ' · '
-  endif
-  let buflist = tabpagebuflist(a:n)
-  let winnr = tabpagewinnr(a:n)
-  if &modified
-    let s .= '! '
-  endif
-  let s .= bufname(buflist[winnr - 1])
-  return s
+        let indicator = (getbufvar(n, '&modified')) ? '%#TabLineModified#► ' : ''
+
+        let s .= hilightbold . leftbound . indicator . hilight . dirpath . hilightbold . filename . rightbound . '%#TabLine# '
+    endfor
+
+    " Set up maps to jump to buffer with Alt + number
+    " TODO: This should probably go somewhere else
+    if len(listedbufs) > 0
+        if has_key(listedbufs, bufnr(''))
+            let curbufnr = listedbufs[bufnr('')]
+        else
+            let curbufnr = 0
+        endif
+
+        " Previous buffers
+        for n in filter(range(1, bufnr('') - 1), 'buflisted(v:val)')
+            let d = curbufnr - listedbufs[n]
+            execute 'nnoremap <buffer> <A-' . listedbufs[n] . '> :' . d . 'bp<CR>'
+            execute 'inoremap <buffer> <A-' . listedbufs[n] . '> <C-c>:' . d . 'bp<CR>'
+        endfor
+
+        " Unmap current
+        execute 'nnoremap <buffer> <A-' . curbufnr . '> <Nop>'
+        execute 'inoremap <buffer> <A-' . curbufnr . '> <Nop>'
+
+        " Next buffers
+        for n in filter(range(bufnr('') + 1, bufnr('$')), 'buflisted(v:val)')
+            let d = listedbufs[n] - curbufnr
+            execute 'nnoremap <buffer> <A-' . listedbufs[n] . '> :' . d . 'bn<CR>'
+            execute 'inoremap <buffer> <A-' . listedbufs[n] . '> <C-c>:' . d . 'bn<CR>'
+        endfor
+    endif
+
+    return s
 endfunction
 
 
