@@ -19,7 +19,10 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-commentary'
 Plug 'benekastah/neomake'
 Plug 'godlygeek/tabular'
-Plug 'octol/vim-cpp-enhanced-highlight'
+
+" Specific language enhancers
+Plug 'idanarye/vim-dutyl',  { 'for': 'd'   }
+Plug 'lervag/vimtex',       { 'for': 'tex' }
 
 " Miscellaneous shit
 Plug 'vim-scripts/JavaDecompiler.vim'
@@ -35,14 +38,14 @@ Plug 'othree/html5.vim'
 Plug 'groenewege/vim-less'
 Plug 'derekwyatt/vim-scala'
 Plug 'udalov/kotlin-vim'
-Plug 'udalov/kotlin-vim'
 Plug 'statianzo/vim-jade'
+Plug 'octol/vim-cpp-enhanced-highlight'
 
 call plug#end()
 
 
 """"""""""""""""""""
-"" Set basic stuff
+"" Settings
 ""
 
 set cursorline
@@ -77,7 +80,7 @@ set numberwidth=5
 set pastetoggle=<F11>
 set scrolloff=5
 set showtabline=2
-set tabline=%!MyTabLine()
+set tabline=%!CustomTabLine()
 set tags+=.tags
 set textwidth=120
 set timeoutlen=400
@@ -169,6 +172,10 @@ let g:startify_list_order = [ [ '  Sessions' ],
 hi StartifyBracket ctermfg=0 cterm=bold
 hi StartifyHeader  ctermfg=195
 
+" Vimtex
+let g:tex_flavor = 'latex'
+let g:vimtex_enabled = 1
+
 
 """""""""""""
 "" Autocmds
@@ -188,9 +195,12 @@ augroup Vimrc
     autocmd BufWinLeave * silent! mkview
     autocmd BufWinEnter * silent! loadview
 
-    " Run Startify when opening a directory
+    " Show Startify when opening a directory
     autocmd VimEnter          * silent! autocmd! FileExplorer
     autocmd VimEnter,BufEnter * call OpenStartifyInDirectory(expand('<amatch>'))
+
+    " Environment-specific settings
+    autocmd BufReadPost,BufNewFile * call SetupEnvironment()
 
 augroup end
 
@@ -212,19 +222,15 @@ nnoremap    <silent> <C-j>      :bp<CR>
 nnoremap    <silent> <C-x>      :Bdelete<CR>
 vnoremap    <silent> <C-x>      <C-c>:Bdelete<CR>
 
-" ^Q for :q!
-nnoremap    <silent> <C-q>      :q!<CR>
-vnoremap    <silent> <C-q>      <C-c>:q!<CR>
-
 " <Home> ignores leading whitespace
 nnoremap    <silent> <Home>     ^
 vnoremap    <silent> <Home>     ^
 inoremap    <silent> <Home>     <C-o>^
 
 " ^G to jump to a tag
-nnoremap    <silent> <C-g>      :tag /\C^
-vnoremap    <silent> <C-g>      <C-c>:tag /\C^
-inoremap    <silent> <C-g>      <C-c>:tag /\C^
+nnoremap    <silent> <C-g>      :tselect /\C^
+vnoremap    <silent> <C-g>      <C-c>:tselect /\C^
+inoremap    <silent> <C-g>      <C-c>:tselect /\C^
 
 " Easily jump to command line
 nnoremap    <silent> \          :
@@ -250,15 +256,16 @@ nnoremap    <silent> <BS>       :nohlsearch<CR>
 ""
 
 let mapleader = "\<Space>"
+let maplocalleader = "\<Space>"
+
+" Build with make by default
+nnoremap <silent> <leader><leader> :make<CR>
 
 " Startify
 nnoremap <silent> <leader>s  :Startify<CR>
 
 " Terminal
 nnoremap <silent> <leader>t  :call jobstart(['urxvtc', '-cd', getcwd()])<CR>
-
-" C++
-nnoremap <silent> <leader>ch :call SplitHeader()<CR>
 
 " Devdocs
 nnoremap <silent> <leader>dd :call jobstart(['chromium-app', 'http://devdocs.io/' . &filetype])<CR>
@@ -268,7 +275,7 @@ nnoremap <silent> <leader>fd :!rm %<CR>
 nnoremap <silent> <leader>fr :call RenameFile()<CR>
 
 " Generate tags
-nnoremap <silent> <leader>gt :call jobstart(['ctags', '-R', '-f.tags', '.'])<CR>
+nnoremap <silent> <leader>gt :call jobstart(['ctags', '-R', '.'])<CR>
 
 " Markdown
 nnoremap <silent> <leader>mp :call jobstart(['md', expand('%')])<CR>
@@ -277,6 +284,7 @@ nnoremap <silent> <leader>mp :call jobstart(['md', expand('%')])<CR>
 """"""""""""""""""""""""
 "" Binary file editing
 ""
+
 augroup Binary
 
     autocmd!
@@ -299,148 +307,85 @@ augroup end
 "" Functions
 ""
 
-" Run current or last test file
-function! RunTestFile(...)
-    if a:0
-        let command_suffix = a:1
-    else
-        let command_suffix = ""
-    endif
-
-    " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|_test.py\)$') != -1
-    if in_test_file
-        call SetTestFile(command_suffix)
-    elseif !exists("t:grb_test_file")
-        return
-    end
-    call RunTests(t:grb_test_file . command_suffix)
-endfunction
-
-
-" Run the nearest test
-function! RunNearestTest()
-    let spec_line_number = line('.')
-    call RunTestFile(":" . spec_line_number)
-endfunction
-
-
-" Set the spec file that tests will be run for.
-function! SetTestFile(command_suffix)
-    let t:grb_test_file=@% . a:command_suffix
-endfunction
-
-
-" Write the file and run tests for the given filename
-function! RunTests(filename)
-    if expand("%") != ""
-      :w
-    end
-    silent! exec ":!echo;echo;echo -e '\e[40m\e[K\e[0m';echo"
-    if match(a:filename, '\.feature$') != -1
-        exec ":!script/features " . a:filename
-    else
-        if filereadable("script/test")
-            " First choice: project-specific test script
-            exec ":!script/test " . a:filename
-        elseif filewritable(".test-commands")
-          " Fall back to the .test-commands pipe if available, assuming someone
-          " is reading the other side and running the commands
-          let cmd = 'rspec --color --format progress --require "~/lib/vim_rspec_formatter" --format VimFormatter --out tmp/quickfix'
-          exec ":!echo " . cmd . " " . a:filename . " > .test-commands"
-
-          " Write an empty string to block until the command completes
-          sleep 100m " milliseconds
-          :!echo > .test-commands
-          redraw!
-        elseif filereadable("Gemfile")
-            " Fall back to a blocking test run with Bundler
-            exec ":!bundle exec rspec --color " . a:filename
-        elseif strlen(glob("test/**/*.py") . glob("tests/**/*.py"))
-            " If we see python-looking tests, assume they should be run with Nose
-            exec "!nosetests " . a:filename
-        else
-            " Fall back to a normal blocking test run
-            exec ":!rspec --color " . a:filename
-        end
-    end
-endfunction
-
-
-" Open header files in a vsplit
-function! SplitHeader()
-    let mainwin = winnr()
-
-    if winnr('$') == 1
-        80vsplit
-    endif
-
-    let h = expand('%:r').'.h'
-
-    wincmd l
-    if winnr() == mainwin
-        80vsplit
-    endif
-
-    exec 'e '.h
-    wincmd p
-endfunction
-
+hi TabLine              ctermfg=242 ctermbg=none cterm=none
+hi TabLineInactive      ctermfg=240 ctermbg=none cterm=none
+hi TabLineInactiveBold  ctermfg=243 ctermbg=none cterm=bold
+hi TabLineActive        ctermfg=252 ctermbg=none cterm=none
+hi TabLineActiveBold    ctermfg=255 ctermbg=none cterm=bold
+hi TabLineModified      ctermfg=214 ctermbg=none cterm=bold
 
 " Custom tab line function
-function! MyTabLine()
-  let s = ''
-  for i in range(tabpagenr('$'))
-    " select the highlighting
-    if i + 1 == tabpagenr()
-      let s .= '%#TabLineSel#'
-    else
-      let s .= '%#TabLine#'
+function! CustomTabLine()
+    let s = '%#TabLine# '
+
+    let numtabs = tabpagenr('$')
+    if numtabs > 1
+        let s .= numtabs . ' tabs! (Only one supported) '
     endif
 
-    " set the tab page number (for mouse clicks)
-    let s .= '%' . (i + 1) . 'T'
+    let listedbufs = {}
+    let listedbufi = 1
 
-    " the label is made by MyTabLabel()
-    let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
-  endfor
+    for n in filter(range(1, bufnr('$')), 'buflisted(v:val)')
+        let listedbufs[n] = listedbufi
+        let listedbufi += 1
 
-  " after the last tab fill with TabLineFill and reset tab page nr
-  let s .= '%#TabLineFill#%T'
+        " TODO: Handle cases > 9
 
-  " right-align the label to close the current tab page
-  if tabpagenr('$') > 1
-    let s .= '%=%#TabLine#%999Xclose'
-  endif
+        let bufname  = substitute(bufname(n), $HOME, '~', '')
+        let dirpath  = substitute(bufname, '[^/]\+/\?$', '', '')
+        let filename = strpart(bufname, strlen(dirpath))
 
-  return s
-endfunction
+        let hilight     = (n == bufnr('')) ? '%#TabLineActive#'     : '%#TabLineInactive#'
+        let hilightbold = (n == bufnr('')) ? '%#TabLineActiveBold#' : '%#TabLineInactiveBold#'
 
+        let leftbound  = ''
+        let rightbound = '  '
 
-" Custom tab label function
-function! MyTabLabel(n)
-  let s = ''
-  let buflen = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
-  if buflen > 1
-    let s .= len(filter(range(1, bufnr('%')), 'buflisted(v:val)')) . ' / ' . buflen . ' · '
-  endif
-  let buflist = tabpagebuflist(a:n)
-  let winnr = tabpagewinnr(a:n)
-  if &modified
-    let s .= '! '
-  endif
-  let s .= bufname(buflist[winnr - 1])
-  return s
+        let indicator = (getbufvar(n, '&modified')) ? '%#TabLineModified#► ' : ''
+
+        let s .= hilightbold . leftbound . indicator . hilight . dirpath . hilightbold . filename . rightbound . '%#TabLine# '
+    endfor
+
+    " Set up maps to jump to buffer with Alt + number
+    " TODO: This should probably go somewhere else
+    if len(listedbufs) > 0
+        if has_key(listedbufs, bufnr(''))
+            let curbufnr = listedbufs[bufnr('')]
+        else
+            let curbufnr = 0
+        endif
+
+        " Previous buffers
+        for n in filter(range(1, bufnr('') - 1), 'buflisted(v:val)')
+            let d = curbufnr - listedbufs[n]
+            execute 'nnoremap <buffer> <A-' . listedbufs[n] . '> :' . d . 'bp<CR>'
+            execute 'inoremap <buffer> <A-' . listedbufs[n] . '> <C-c>:' . d . 'bp<CR>'
+        endfor
+
+        " Unmap current
+        execute 'nnoremap <buffer> <A-' . curbufnr . '> <Nop>'
+        execute 'inoremap <buffer> <A-' . curbufnr . '> <Nop>'
+
+        " Next buffers
+        for n in filter(range(bufnr('') + 1, bufnr('$')), 'buflisted(v:val)')
+            let d = listedbufs[n] - curbufnr
+            execute 'nnoremap <buffer> <A-' . listedbufs[n] . '> :' . d . 'bn<CR>'
+            execute 'inoremap <buffer> <A-' . listedbufs[n] . '> <C-c>:' . d . 'bn<CR>'
+        endfor
+    endif
+
+    return s
 endfunction
 
 
 " Tab completion when appropiate
 function! InsertTabWrapper()
     let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
+    if !col || getline('.')[col - 1] !~ '\k\|\.\|>\|:'
         return "\<Tab>"
     else
-        return "\<C-n>"
+        return pumvisible() ? "\<C-n>" : g:tab_completion_mapping " See SetupEnvironment
     endif
 endfunction
 
@@ -451,6 +396,8 @@ function! RenameFile()
     let new_name = input('New file name: ', expand('%'), 'file')
     if new_name != '' && new_name != old_name
         exec ':saveas ' . new_name
+        edit #
+        Bdelete
         exec ':silent !rm ' . old_name
         redraw!
     endif
@@ -483,6 +430,36 @@ function! OpenStartifyInDirectory(dir)
 endfunction
 
 
+" Environment-specific settings
+function! SetupEnvironment()
+
+    if filereadable('build.gradle')
+
+        let &makeprg='./gradlew --daemon'
+        let &errorformat='%.%#%t:\ ' . getcwd() . '/%f:\ (%l\,\ %c):\ %m'
+        nnoremap <leader><leader> :make instalLDebug<CR>
+
+        let g:ctrlp_custom_ignore = '\v/(build|cache|gradle)/'
+
+    endif
+
+    if &filetype == 'd'
+
+        let g:tab_completion_mapping = "\<C-x>\<C-o>"
+
+    else
+
+        let g:tab_completion_mapping = "\<C-n>"
+
+    endif
+
+    if exists("*SetupEnvironmentLocal")
+        call SetupEnvironmentLocal()
+    end
+
+endfunction
+
+
 """"""""""""""""""
 "" Local rc file
 ""
@@ -491,39 +468,9 @@ if filereadable($HOME . "/.nvimenv")
     source $HOME/.nvimenv
 endif
 
-" Example template for convenient copypasta:
+" Example local settings:
 "
-" " Machine-local Neovim configuration
+" function! SetupEnvironmentLocal() ... endfunction
+" let g:startify_bookmarks += [ { 'xx': '~/projects/xxxxxxxx/' } ]
 "
-" function! SetupEnvironment()
-"     let l:path = expand('%:p')
-"     if l:path =~ '/home/dark/projects/almanapp-android/'
-"
-"         let &makeprg='./build.rb'
-"         let &errorformat='%A%.%#/home/dark/projects/almanapp-android/%f:%l:\ %m,%-Z%p^,%.%#%t:\ /home/dark/projects/almanapp-android/%f:\ (%l\,\ %c):\ %m,%-G%.%#'
-"         nnoremap <leader><leader> :make build debug --run<CR>
-"
-"         let g:ctrlp_custom_ignore = '\v/(build|cache|gradle)/'
-"
-"     elseif l:path =~ '/home/dark/projects/aegis/'
-"
-"         let &makeprg='./gradlew --daemon'
-"         let &errorformat='%.%#%t:\ /home/dark/projects/aegis/%f:\ (%l\,\ %c):\ %m,%-G%.%#'
-"         nnoremap <leader><leader> :make instalLDebug<CR>
-"
-"         let g:ctrlp_custom_ignore = '\v/(build|cache|gradle)/'
-"
-"     endif
-" endfunction
-"
-" augroup SetupEnvironment
-"
-"     autocmd!
-"
-"     autocmd BufReadPost,BufNewFile * call SetupEnvironment()
-"
-" augroup end
-"
-" let g:startify_bookmarks += [ { 'ag': '~/projects/aegis/build.gradle' } ]
-"
-" " vim: set ft=vim:
+" vim: ft=vim
