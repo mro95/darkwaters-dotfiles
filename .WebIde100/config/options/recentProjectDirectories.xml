@@ -1,0 +1,42 @@
+<application>
+  <component name="RecentDirectoryProjectsManager">
+    <option name="recentPaths">
+      <list>
+        <option value="$USER_HOME$/projects/docker/sinuss/volumes/code" />
+        <option value="/data1/projects/sinuss" />
+      </list>
+    </option>
+    <option name="openPaths">
+      <list>
+        <option value="$USER_HOME$/projects/docker/sinuss/volumes/code" />
+      </list>
+    </option>
+    <option name="lastPath" value="$USER_HOME$/projects/docker/sinuss/volumes/code" />
+    <option name="additionalInfo">
+      <map>
+        <entry key="/data1/projects/sinuss">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="PS-143.381" />
+              <option name="productionCode" value="PS" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1467105625906" />
+              <option name="buildTimestamp" value="1446246000000" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/projects/docker/sinuss/volumes/code">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="PS-143.381" />
+              <option name="productionCode" value="PS" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1467642205390" />
+              <option name="buildTimestamp" value="1446246000000" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</application>

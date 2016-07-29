@@ -1,0 +1,56 @@
+<application>
+  <component name="StatisticsApplicationUsages">
+    <group name="php-interpreters">
+      <project id="code" values="0" collectionTime="1467644317572" />
+      <project id="sinuss" values="0" collectionTime="1465856724743" />
+    </group>
+    <group name="module type">
+      <project id="code" values="WEB_MODULE" collectionTime="1467644317381" />
+      <project id="sinuss" values="WEB_MODULE" collectionTime="1465856724740" />
+    </group>
+    <group name="vcs">
+      <project id="code" values="Git" collectionTime="1467644317381" />
+      <project id="sinuss" values="Git" collectionTime="1465856724740" />
+    </group>
+    <group name="file-type">
+      <project id="code" values="SmartyConfig,PHP,Images,HTML,UNKNOWN,SourceMap,Ini,C++,ARCHIVE,CoffeeScript,ReST,Less,SCSS,JSCS,JSON,YAML,ESLint,Literate CoffeeScript,PLAIN_TEXT,JavaScript,Twig,SQL,Blade,CSS,Smarty,PATCH,TypeScript,Locale,Cucumber,htaccess,JSHint,XML" collectionTime="1467644317408" />
+      <project id="sinuss" values="HTML,SmartyConfig,JavaScript,CSS,JSON,JSCS,ARCHIVE,Locale,C++,Literate CoffeeScript,Smarty,UNKNOWN,Images,JSHint,ESLint,Twig,CoffeeScript,ReST,XML,TypeScript,Ini,PHP,SourceMap,htaccess,SCSS,Less,PLAIN_TEXT,YAML,PATCH,SQL,Cucumber,Blade" collectionTime="1465856724743" />
+    </group>
+    <group name="php-interpreter-version">
+      <project id="code" values="not installed" collectionTime="1467644317570" />
+      <project id="sinuss" values="not installed" collectionTime="1465856724743" />
+    </group>
+    <group name="php-include-path">
+      <project id="code" values="0" collectionTime="1467644317566" />
+      <project id="sinuss" values="0" collectionTime="1465856724743" />
+    </group>
+    <group name="JavaScript versions">
+      <project id="code" values="ECMAScript 5.1" collectionTime="1467644317566" />
+      <project id="sinuss" values="ECMAScript 5.1" collectionTime="1465856724743" />
+    </group>
+    <group name="javaScript Scope Usages">
+      <project id="code" values="Project,Project" collectionTime="1467644317566" />
+      <project id="sinuss" values="Project,Project" collectionTime="1465856724743" />
+    </group>
+    <group name="php-debug-skipped-paths">
+      <project id="code" values="0" collectionTime="1467644317574" />
+      <project id="sinuss" values="0" collectionTime="1465856724743" />
+    </group>
+    <group name="php-servers">
+      <project id="code" values="0" collectionTime="1467644317570" />
+      <project id="sinuss" values="0" collectionTime="1465856724743" />
+    </group>
+  </component>
+  <component name="UsageTrigger">
+    <counts>
+      <entry feature="execute.js.build_tools.gulp.Run" count="14" />
+      <entry feature="ide.settings.Appearance" count="6" />
+      <entry feature="ide.settings.General" count="1" />
+      <entry feature="ide.settings.Inspections" count="7" />
+      <entry feature="ide.settings.PHP" count="7" />
+      <entry feature="ide.settings.Plugins" count="2" />
+      <entry feature="ideaapp.started" count="36" />
+      <entry feature="welcome.screen.WelcomeScreen.OpenDirectoryProject" count="1" />
+    </counts>
+  </component>
+</application>

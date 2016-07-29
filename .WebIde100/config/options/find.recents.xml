@@ -1,0 +1,17 @@
+<application>
+  <component name="FindRecents">
+    <findStrings>
+      <find>save-updated-category</find>
+      <find>4.95</find>
+      <find>price</find>
+      <find>path</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>getPath()</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>/data1/projects/sinuss/resources</dir>
+      <dir>/data1/projects/sinuss/app</dir>
+    </dirStrings>
+  </component>
+</application>

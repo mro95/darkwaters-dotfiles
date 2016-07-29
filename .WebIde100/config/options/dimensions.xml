@@ -1,0 +1,32 @@
+<application>
+  <component name="DimensionService">
+    <location key="FileChooserDialogImpl.0.0.1920.1080" x="743" y="207" />
+    <location key="WELCOME_SCREEN.0.0.1920.1080" x="960" y="230" />
+    <location key="com.intellij.ide.util.TipDialog.0.0.1920.1080" x="675" y="385" />
+    <location key="#Browse_Repositories.0.0.1920.1080" x="545" y="218" />
+    <location key="#Browse_JetBrains_Plugins_.0.0.1920.1080" x="545" y="218" />
+    <location key="SettingsEditor.0.0.1920.1080" x="446" y="219" />
+    <location key="findTextDialog.0.0.1920.1080" x="719" y="284" />
+    <location key="#Vim_Emulation.0.0.1920.1080" x="714" y="285" />
+    <location key="com.intellij.ide.util.TipDialog.0.0.3440.1440" x="2282" y="546" />
+    <location key="WELCOME_SCREEN.0.0.3440.1440" x="1719" y="230" />
+    <location key="WELCOME_SCREEN.3440.560.1920.1080" x="4274" y="230" />
+    <location key="NewPhpClassDialog.0.0.1920.1080" x="769" y="399" />
+    <location key="#com.intellij.ide.util.MemberChooser.0.0.1920.1080" x="773" y="281" />
+    <location key="#com.jetbrains.php.lang.intentions.PhpImportClassDialog#.0.0.1920.1080" x="745" y="479" />
+    <location key="#Code_Sniffer.0.0.1920.1080" x="545" y="218" />
+    <location key="#Mess_Detector.0.0.1920.1080" x="545" y="218" />
+    <size key="FileChooserDialogImpl.0.0.1920.1080" width="424" height="463" />
+    <size key="GridCell.Tab.0.left.0.0.1920.1080" width="1878" height="295" />
+    <size key="GridCell.Tab.0.center.0.0.1920.1080" width="1878" height="295" />
+    <size key="GridCell.Tab.0.right.0.0.1920.1080" width="1878" height="295" />
+    <size key="GridCell.Tab.0.bottom.0.0.1920.1080" width="1878" height="295" />
+    <size key="GridCell.Tab.0.left.0.0.3440.1440" width="2382" height="395" />
+    <size key="GridCell.Tab.0.center.0.0.3440.1440" width="2382" height="395" />
+    <size key="GridCell.Tab.0.right.0.0.3440.1440" width="2382" height="395" />
+    <size key="GridCell.Tab.0.bottom.0.0.3440.1440" width="2382" height="395" />
+    <size key="SettingsEditor.0.0.1920.1080" width="1022" height="661" />
+    <size key="#com.intellij.ide.util.MemberChooser.0.0.1920.1080" width="443" height="542" />
+    <size key="NewPhpClassDialog.0.0.1920.1080" width="339" height="307" />
+  </component>
+</application>

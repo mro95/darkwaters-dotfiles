@@ -1,0 +1,472 @@
+<application>
+  <component name="VimSettings">
+    <state version="4" enabled="true" />
+    <globalmarks />
+    <filemarks>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Factories/Webshop/ImageFactory.php" timestamp="1467297039259">
+        <mark key="[" line="41" column="18" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/pages/Checkout/PayMethod.blade.php" timestamp="1461507908191">
+        <mark key="[" line="10" column="0" />
+        <mark key="]" line="10" column="0" />
+        <mark key="." line="10" column="0" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/components/midheader.blade.php" timestamp="1462476205843">
+        <mark key="[" line="2" column="113" />
+        <mark key="]" line="2" column="93" />
+        <mark key="^" line="2" column="93" />
+        <mark key="." line="2" column="93" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Parsers/FarnellProductParser.php" timestamp="1465323880208">
+        <mark key="[" line="200" column="0" />
+        <mark key="]" line="200" column="0" />
+        <mark key="." line="200" column="0" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Parsers/FarnellPriceParser.php" timestamp="1462698234212">
+        <mark key="[" line="214" column="20" />
+        <mark key="]" line="217" column="8" />
+        <mark key="." line="217" column="8" />
+        <mark key="^" line="217" column="8" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Http/Controllers/ProductController.php" timestamp="1465078139708">
+        <mark key="[" line="40" column="0" />
+        <mark key="]" line="40" column="0" />
+        <mark key="." line="40" column="0" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Helpers/File.php" timestamp="1465319965271">
+        <mark key="[" line="85" column="0" />
+        <mark key="]" line="85" column="0" />
+        <mark key="." line="85" column="0" />
+        <mark key="^" line="88" column="33" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/pages/Webshop/orderOverview.blade.php" timestamp="1462722984942">
+        <mark key="[" line="28" column="84" />
+        <mark key="]" line="28" column="84" />
+        <mark key="^" line="28" column="83" />
+        <mark key="." line="28" column="84" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Parsers/Farnell/Preparser.php" timestamp="1467209242186">
+        <mark key="[" line="53" column="0" />
+        <mark key="]" line="53" column="76" />
+        <mark key="." line="53" column="0" />
+        <mark key="^" line="36" column="75" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/pages/voorwaarden.blade.php" timestamp="1465741276004">
+        <mark key="[" line="8" column="21" />
+        <mark key="]" line="8" column="22" />
+        <mark key="." line="8" column="22" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Http/Controllers/ProductController.php" timestamp="1467240732604">
+        <mark key="[" line="71" column="108" />
+        <mark key="]" line="45" column="64" />
+        <mark key="^" line="45" column="64" />
+        <mark key="." line="45" column="64" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Http/Controllers/Payment/MollieController.php" timestamp="1467366467186">
+        <mark key="[" line="66" column="0" />
+        <mark key="]" line="67" column="30" />
+        <mark key="^" line="67" column="30" />
+        <mark key="." line="67" column="30" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/resources/views/components/topsale.blade.php" timestamp="1467642972153" />
+      <file name="/data1/projects/sinuss/app/Console/Commands/FarnellUpdateSpecs.php" timestamp="1463952729008">
+        <mark key="[" line="43" column="38" />
+        <mark key="]" line="43" column="36" />
+        <mark key="^" line="43" column="36" />
+        <mark key="." line="43" column="36" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Http/Controllers/Payment/PayCheckoutController.php" timestamp="1463264820815">
+        <mark key="[" line="126" column="15" />
+        <mark key="]" line="126" column="49" />
+        <mark key="^" line="126" column="49" />
+        <mark key="." line="126" column="49" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/.env" timestamp="1467243447704">
+        <mark key="[" line="1" column="9" />
+        <mark key="]" line="1" column="8" />
+        <mark key="^" line="1" column="8" />
+        <mark key="." line="1" column="8" />
+      </file>
+      <file name="/data1/projects/sinuss/composer.json" timestamp="1463263002662">
+        <mark key="[" line="22" column="32" />
+        <mark key="]" line="22" column="33" />
+        <mark key="." line="22" column="33" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Parsers/QueryQueue.php" timestamp="1465322505160">
+        <mark key="[" line="18" column="58" />
+        <mark key="]" line="18" column="58" />
+        <mark key="." line="18" column="58" />
+        <mark key="^" line="18" column="59" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Console/Commands/FarnellUpdate.php" timestamp="1467210489576">
+        <mark key="[" line="50" column="0" />
+        <mark key="]" line="50" column="0" />
+        <mark key="." line="50" column="0" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Models/API/Postalcode.php" timestamp="1467297565286">
+        <mark key="[" line="29" column="0" />
+        <mark key="]" line="29" column="56" />
+        <mark key="." line="8" column="27" />
+        <mark key="^" line="8" column="27" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Http/Controllers/OrderController.php" timestamp="1462127654755">
+        <mark key="[" line="48" column="43" />
+        <mark key="]" line="48" column="44" />
+        <mark key="^" line="48" column="44" />
+        <mark key="." line="48" column="44" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Console/Commands/Farnell/Preparser.php" timestamp="1465246803404">
+        <mark key="[" line="39" column="36" />
+        <mark key="]" line="4" column="0" />
+        <mark key="." line="4" column="0" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/pages/Webshop/order.blade.php" timestamp="1462128389211">
+        <mark key="[" line="58" column="89" />
+        <mark key="]" line="58" column="92" />
+        <mark key="^" line="58" column="92" />
+        <mark key="." line="58" column="92" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/resources/views/pages/Webshop/showShoppingCart.blade.php" timestamp="1467243669267">
+        <mark key="[" line="65" column="64" />
+        <mark key="]" line="65" column="89" />
+        <mark key="." line="65" column="89" />
+        <mark key="^" line="65" column="89" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Models/Webshop/TextSpecification.php" timestamp="1465755621734">
+        <mark key="[" line="50" column="31" />
+        <mark key="]" line="50" column="48" />
+        <mark key="^" line="50" column="48" />
+        <mark key="." line="50" column="48" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Parsers/iParser.php" timestamp="1463407433623">
+        <mark key="[" line="6" column="32" />
+        <mark key="]" line="6" column="59" />
+        <mark key="^" line="6" column="30" />
+        <mark key="." line="6" column="32" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Console/Kernel.php" timestamp="1465246731831">
+        <mark key="[" line="31" column="30" />
+        <mark key="]" line="31" column="46" />
+        <mark key="." line="31" column="46" />
+        <mark key="^" line="31" column="46" />
+      </file>
+      <file name="/data1/projects/sinuss/Homestead.yaml" timestamp="1463260972960">
+        <mark key="[" line="15" column="32" />
+        <mark key="]" line="16" column="11" />
+        <mark key="^" line="16" column="11" />
+        <mark key="." line="16" column="11" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/assets/js/cart.js" timestamp="1464689593105">
+        <mark key="[" line="2" column="24" />
+        <mark key="]" line="1" column="76" />
+        <mark key="^" line="1" column="76" />
+        <mark key="." line="1" column="76" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/admin/pages/category/category-select.blade.php" timestamp="1462447623284">
+        <mark key="[" line="239" column="46" />
+        <mark key="]" line="239" column="48" />
+        <mark key="." line="239" column="48" />
+        <mark key="^" line="239" column="48" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Console/Commands/Farnell/Preparser.php" timestamp="1467209059346">
+        <mark key="[" line="2" column="10" />
+        <mark key="]" line="2" column="37" />
+        <mark key="^" line="41" column="37" />
+        <mark key="." line="41" column="37" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/composer.json" timestamp="1467115231188">
+        <mark key="[" line="20" column="28" />
+        <mark key="]" line="20" column="29" />
+        <mark key="." line="20" column="29" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Models/Webshop/Settings.php" timestamp="1467236148912">
+        <mark key="[" line="0" column="29" />
+        <mark key="]" line="0" column="5" />
+        <mark key="^" line="0" column="5" />
+        <mark key="." line="0" column="5" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/pages/Webshop/searchPage.blade.php" timestamp="1462475170109">
+        <mark key="[" line="78" column="0" />
+        <mark key="]" line="78" column="0" />
+        <mark key="." line="78" column="0" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/assets/sass/style.scss" timestamp="1465750445602">
+        <mark key="[" line="45" column="10" />
+        <mark key="]" line="46" column="18" />
+        <mark key="^" line="46" column="18" />
+        <mark key="." line="46" column="18" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Models/Webshop/Images.php" timestamp="1467374857958">
+        <mark key="[" line="75" column="60" />
+        <mark key="]" line="75" column="47" />
+        <mark key="^" line="75" column="47" />
+        <mark key="." line="75" column="47" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/resources/views/layouts/homepage.blade.php" timestamp="1467405839277">
+        <mark key="[" line="2" column="94" />
+        <mark key="]" line="2" column="94" />
+        <mark key="^" line="2" column="94" />
+        <mark key="." line="2" column="94" />
+      </file>
+      <file name="/data1/projects/sinuss/resources/views/pdf/invoice.blade.php" timestamp="1462126628832">
+        <mark key="[" line="202" column="64" />
+        <mark key="]" line="202" column="71" />
+        <mark key="." line="202" column="71" />
+        <mark key="^" line="202" column="71" />
+      </file>
+      <file name="/data1/projects/sinuss/.env.example" timestamp="1462702914494">
+        <mark key="[" line="1" column="8" />
+        <mark key="]" line="1" column="8" />
+        <mark key="^" line="1" column="8" />
+        <mark key="." line="1" column="8" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Models/Webshop/Orders.php" timestamp="1462128206936">
+        <mark key="[" line="115" column="36" />
+        <mark key="]" line="115" column="39" />
+        <mark key="." line="115" column="39" />
+        <mark key="^" line="115" column="39" />
+      </file>
+      <file name="/data1/projects/sinuss/.env" timestamp="1465078172737">
+        <mark key="[" line="10" column="27" />
+        <mark key="]" line="10" column="20" />
+        <mark key="." line="10" column="20" />
+        <mark key="^" line="10" column="20" />
+      </file>
+      <file name="/data1/projects/sinuss/database/migrations/2015_11_10_092541_create_nedis_property_units_table.php" timestamp="1462734759367">
+        <mark key="[" line="20" column="0" />
+        <mark key="]" line="20" column="0" />
+        <mark key="." line="20" column="0" />
+      </file>
+      <file name="/Dummy.txt" timestamp="1467545974717">
+        <mark key="[" line="0" column="0" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/resources/views/pages/User/editAddressDetails.blade.php" timestamp="1467118755458">
+        <mark key="[" line="92" column="51" />
+        <mark key="]" line="92" column="52" />
+        <mark key="." line="92" column="52" />
+        <mark key="^" line="92" column="52" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/resources/assets/js/collapse.js" timestamp="1467546025126">
+        <mark key="[" line="0" column="0" />
+        <mark key="]" line="0" column="0" />
+        <mark key="." line="0" column="0" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Models/Webshop/Cart.php" timestamp="1462124501411">
+        <mark key="[" line="86" column="15" />
+        <mark key="]" line="86" column="43" />
+        <mark key="^" line="86" column="43" />
+        <mark key="." line="86" column="43" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Http/Controllers/Payment/MollieController.php" timestamp="1462124470297">
+        <mark key="[" line="83" column="55" />
+        <mark key="]" line="83" column="72" />
+        <mark key="." line="83" column="72" />
+        <mark key="^" line="83" column="72" />
+      </file>
+      <file name="/data1/projects/sinuss/database/migrations/2016_05_08_110547_AddLocaleToPrices.php" timestamp="1462698496750">
+        <mark key="[" line="29" column="26" />
+        <mark key="]" line="29" column="40" />
+        <mark key="." line="29" column="40" />
+        <mark key="^" line="29" column="40" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Console/Commands/Farnell/FarnellPreparser.php" timestamp="1465246377834">
+        <mark key="[" line="2" column="30" />
+        <mark key="]" line="41" column="27" />
+        <mark key="^" line="41" column="27" />
+        <mark key="." line="41" column="27" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Models/Webshop/Settings.php" timestamp="1462717121645">
+        <mark key="[" line="21" column="71" />
+        <mark key="]" line="21" column="87" />
+        <mark key="." line="21" column="87" />
+        <mark key="^" line="21" column="87" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Parsers/Farnell/Preparser.php" timestamp="1465320145773">
+        <mark key="[" line="7" column="5" />
+        <mark key="]" line="12" column="8" />
+        <mark key="." line="12" column="8" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Objects/FloatObj.php" timestamp="1462697620887">
+        <mark key="[" line="34" column="100" />
+        <mark key="]" line="34" column="45" />
+        <mark key="." line="34" column="105" />
+        <mark key="^" line="34" column="45" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Http/Controllers/SearchController.php" timestamp="1467373442997">
+        <mark key="]" line="44" column="34" />
+        <mark key="^" line="44" column="34" />
+        <mark key="." line="44" column="34" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/resources/views/pdf/invoice.blade.php" timestamp="1467297719218">
+        <mark key="[" line="166" column="71" />
+        <mark key="]" line="166" column="107" />
+        <mark key="^" line="166" column="107" />
+        <mark key="." line="166" column="107" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Factories/Farnell/PriceFactory.php" timestamp="1462715759238">
+        <mark key="[" line="160" column="0" />
+        <mark key="]" line="160" column="0" />
+        <mark key="." line="160" column="0" />
+      </file>
+      <file name="/data1/projects/sinuss/app/Http/Controllers/Payment/PayMethodCheckoutController.php" timestamp="1463263951811">
+        <mark key="[" line="34" column="76" />
+        <mark key="]" line="34" column="49" />
+        <mark key="." line="34" column="49" />
+        <mark key="^" line="34" column="49" />
+      </file>
+      <file name="$USER_HOME$/projects/docker/sinuss/volumes/code/gulpfile.js" timestamp="1467546152171">
+        <mark key="[" line="25" column="17" />
+        <mark key="]" line="25" column="18" />
+        <mark key="^" line="25" column="18" />
+        <mark key="." line="25" column="18" />
+      </file>
+    </filemarks>
+    <jumps>
+      <jump line="98" column="0" filename="/data1/projects/sinuss/app/Http/routes.php" />
+      <jump line="137" column="13" filename="/data1/projects/sinuss/app/Http/routes.php" />
+      <jump line="17" column="8" filename="/data1/projects/sinuss/database/migrations/2016_05_01_123603_AddShippingCostsToOrder.php" />
+      <jump line="32" column="0" filename="/data1/projects/sinuss/database/migrations/2016_05_01_123603_AddShippingCostsToOrder.php" />
+      <jump line="19" column="0" filename="/data1/projects/sinuss/database/migrations/2016_05_01_123603_AddShippingCostsToOrder.php" />
+      <jump line="0" column="0" filename="/data1/projects/sinuss/database/migrations/2016_05_01_123603_AddShippingCostsToOrder.php" />
+      <jump line="16" column="37" filename="/data1/projects/sinuss/database/migrations/2016_05_01_123603_AddShippingCostsToOrder.php" />
+      <jump line="4" column="0" filename="/data1/projects/sinuss/database/migrations/2016_05_01_123603_AddShippingCostsToOrder.php" />
+      <jump line="218" column="35" filename="/data1/projects/sinuss/app/Http/routes.php" />
+      <jump line="73" column="8" filename="/data1/projects/sinuss/app/Models/Webshop/Product.php" />
+      <jump line="176" column="13" filename="/data1/projects/sinuss/app/Models/Webshop/Product.php" />
+      <jump line="180" column="18" filename="/data1/projects/sinuss/app/Models/Webshop/Product.php" />
+      <jump line="181" column="26" filename="/data1/projects/sinuss/app/Models/Webshop/Product.php" />
+      <jump line="186" column="19" filename="/data1/projects/sinuss/app/Models/Webshop/Product.php" />
+      <jump line="187" column="26" filename="/data1/projects/sinuss/app/Models/Webshop/Product.php" />
+      <jump line="16" column="43" filename="/data1/projects/sinuss/resources/assets/js/cart.js" />
+      <jump line="158" column="64" filename="/data1/projects/sinuss/resources/assets/js/cart.js" />
+      <jump line="136" column="33" filename="/data1/projects/sinuss/app/Http/routes.php" />
+      <jump line="29" column="0" filename="/data1/projects/sinuss/app/Parsers/FarnellProductParser.php" />
+      <jump line="120" column="23" filename="/data1/projects/sinuss/app/Parsers/FarnellProductParser.php" />
+      <jump line="121" column="23" filename="/data1/projects/sinuss/app/Parsers/FarnellProductParser.php" />
+      <jump line="114" column="23" filename="/data1/projects/sinuss/app/Parsers/FarnellProductParser.php" />
+      <jump line="159" column="55" filename="/data1/projects/sinuss/resources/assets/js/cart.js" />
+      <jump line="10" column="12" filename="/data1/projects/sinuss/resources/assets/js/cart.js" />
+      <jump line="15" column="9" filename="/data1/projects/sinuss/resources/assets/js/cart.js" />
+      <jump line="96" column="49" filename="/data1/projects/sinuss/app/Http/Controllers/CategoryController.php" />
+      <jump line="65" column="19" filename="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Http/Controllers/OrderController.php" />
+      <jump line="199" column="17" filename="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Http/Controllers/CategoryController.php" />
+      <jump line="17" column="6" filename="$USER_HOME$/projects/docker/sinuss/volumes/code/app/Http/Controllers/CartController.php" />
+    </jumps>
+    <registers>
+      <register name="&quot;" type="2">
+        <text encoding="base64">CQkiY2Fyb3VzZWwuanMiCg==</text>
+      </register>
+      <register name="-" type="4">
+        <text>color: #195eaa;</text>
+      </register>
+      <register name="/" type="4">
+        <text>import</text>
+      </register>
+      <register name="0" type="2">
+        <text encoding="base64">CQkiY2Fyb3VzZWwuanMiCg==</text>
+      </register>
+      <register name="1" type="2">
+        <text encoding="base64">LyoqCiAqIAogKiBDcmVhdGVkIGJ5IG1ybzk1IG9uIDcvMy8xNi4KICovCg==</text>
+      </register>
+      <register name="2" type="4">
+        <text>color: #195eaa;</text>
+      </register>
+      <register name="3" type="2">
+        <text encoding="base64">ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo=</text>
+      </register>
+      <register name="4" type="2">
+        <text encoding="base64">ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGltZyBzcmM9Imh0dHBzOi8vc2ludXNzLm5sL2ltYWdlcy9oZWFkZXJzL2Zhcm5lbGwtaW1hZ2UxLnBuZyIgLz4K</text>
+      </register>
+      <register name="5" type="2">
+        <text encoding="base64">ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo=</text>
+      </register>
+      <register name="6" type="2">
+        <text encoding="base64">ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGltZyBzcmM9Imh0dHBzOi8vc2ludXNzLm5sL2ltYWdlcy9oZWFkZXJzL3BhcnRuZXItbG9nby5wbmciIC8+Cg==</text>
+      </register>
+      <register name="7" type="2">
+        <text encoding="base64">ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGJyPgo=</text>
+      </register>
+      <register name="8" type="4">
+        <text encoding="base64">IHN0eWxlPSJwb3NpdGlvbjogcmVsYXRpdmU7ICI=</text>
+      </register>
+      <register name="9" type="2">
+        <text encoding="base64">Cg==</text>
+      </register>
+      <register name=":" type="4">
+        <text>w</text>
+      </register>
+    </registers>
+    <search>
+      <last-search>import</last-search>
+      <last-offset />
+      <last-pattern>import</last-pattern>
+      <last-replace>location</last-replace>
+      <last-substitute>instance</last-substitute>
+      <last-dir>1</last-dir>
+      <show-last>false</show-last>
+    </search>
+    <history>
+      <history-search>
+        <entry>winkelwagen</entry>
+        <entry>add</entry>
+        <entry>pdf</entry>
+        <entry>isday</entry>
+        <entry>pricelist</entry>
+        <entry>4.95</entry>
+        <entry>bestellen</entry>
+        <entry>skip</entry>
+        <entry>shipping</entry>
+        <entry>shipping_costs</entry>
+        <entry>value</entry>
+        <entry>instance</entry>
+        <entry>no-wrap</entry>
+        <entry>import</entry>
+      </history-search>
+      <history-cmd>
+        <entry>%s/shipping_costs/shipping-costs/g</entry>
+        <entry encoding="base64">JzwsJz5zL2luc3RhbmNlL2xvY2F0aW9uL2c=</entry>
+        <entry>w</entry>
+      </history-cmd>
+      <history-expr />
+      <history-input />
+    </history>
+    <shortcut-conflicts>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed R</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed S</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed F</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="ide">
+        <text>ctrl pressed V</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed B</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="ide">
+        <text>ctrl pressed C</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed D</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed N</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed X</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed A</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed W</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed U</text>
+      </shortcut-conflict>
+    </shortcut-conflicts>
+  </component>
+</application>
