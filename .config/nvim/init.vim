@@ -35,6 +35,8 @@ Plug 'othree/html5.vim'
 Plug 'groenewege/vim-less'
 Plug 'derekwyatt/vim-scala'
 Plug 'udalov/kotlin-vim'
+Plug 'udalov/kotlin-vim'
+Plug 'statianzo/vim-jade'
 
 call plug#end()
 
