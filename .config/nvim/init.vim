@@ -10,7 +10,6 @@ call plug#begin()
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTree' }
 Plug 'majutsushi/tagbar',   { 'on': 'Tagbar'   }
-Plug 'mhinz/vim-startify'
 
 " Git helpers
 Plug 'tpope/vim-fugitive'
@@ -28,7 +27,7 @@ Plug 'lervag/vimtex',       { 'for': 'tex' }
 " Miscellaneous shit
 Plug 'vim-scripts/JavaDecompiler.vim'
 Plug 'moll/vim-bbye'
-Plug 'danchoi/ri.vim'
+Plug 'mhinz/vim-startify'
 
 " Extra syntax support
 Plug 'hail2u/vim-css3-syntax'
@@ -41,8 +40,6 @@ Plug 'derekwyatt/vim-scala'
 Plug 'udalov/kotlin-vim'
 Plug 'statianzo/vim-jade'
 Plug 'octol/vim-cpp-enhanced-highlight'
-
-" Plug '~/projects/agitated/'
 
 call plug#end()
 
@@ -127,8 +124,6 @@ let g:neomake_list_height = 5
 let g:ctrlp_cmd = 'CtrlPCurWD'
 
 " Startify
-let g:startify_disable_at_vimenter = 0
-
 let g:startify_default_custom_header = [ '                      -`                     ',
                                        \ '                     .o+`                    ',
                                        \ '                    `ooo/                    ',
@@ -154,15 +149,14 @@ let g:startify_default_custom_header = [ '                      -`              
 
 let g:startify_custom_header = g:startify_default_custom_header
 
-let g:dark_config_files = [ [ 'sx', 'dotfiles/.config/sxhkd/sxhkdrc', 'Config: sxhkd' ],
-                          \ [ 'bs', 'dotfiles/.config/bspwm/bspwmrc', 'Config: bspwm' ],
-                          \ [ 'zs', 'dotfiles/.zshrc',                'Config: zsh'   ] ]
-
-let g:startify_transformations = map(copy(g:dark_config_files), '[ v:val[1], v:val[2] ]')
-let g:startify_bookmarks       = map(copy(g:dark_config_files), '{ v:val[0]: v:val[1] }')
-
-let g:startify_bookmarks += [ { '  ': '' },
-                            \ { 'pd': '~/dotfiles/' } ]
+let g:startify_bookmarks = [ { '.c': '~/.config/' },
+                           \ { '.j': '~/.js/' },
+                           \ { '  ': '' },
+                           \ { 've': '~/.nvimenv' },
+                           \ { 'vi': '~/.config/nvim/init.vim' },
+                           \ { 'vc': '~/.config/nvim/colors/tomorrow-night.vim' },
+                           \ { '  ': '' },
+                           \ { 'pd': '~/dotfiles/' } ]
 
 let g:startify_change_to_dir      = 0
 let g:startify_change_to_vcs_root = 1
@@ -172,12 +166,11 @@ let g:startify_list_order = [ [ '  Sessions' ],
                             \ 'sessions',
                             \ [ '  Bookmarks' ],
                             \ 'bookmarks',
-                            \ [ '  MRU ' . getcwd() ],
+                            \ [ '  MRU' ],
                             \ 'dir' ]
 
 hi StartifyBracket ctermfg=0 cterm=bold
 hi StartifyHeader  ctermfg=195
-hi StartifyFile    ctermfg=9 cterm=bold
 
 " Vimtex
 let g:tex_flavor = 'latex'
@@ -287,13 +280,9 @@ nnoremap <silent> <leader>gt :call jobstart(['ctags', '-R', '.'])<CR>
 " Markdown
 nnoremap <silent> <leader>mp :call jobstart(['md', expand('%')])<CR>
 
-nnoremap <silent> <leader>vh :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
-            \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name")
-            \ . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
 
 """"""""""""""""""""""""
-"" File transforms
+"" Binary file editing
 ""
 
 augroup Binary
@@ -455,17 +444,13 @@ function! SetupEnvironment()
     endif
 
     if &filetype == 'd'
+
         let g:tab_completion_mapping = "\<C-x>\<C-o>"
+
     else
+
         let g:tab_completion_mapping = "\<C-n>"
-    endif
 
-    if &filetype == 'ruby'
-        set path+=lib
-    endif
-
-    if &filetype == 'gitcommit'
-        set tw=80
     endif
 
     if exists("*SetupEnvironmentLocal")

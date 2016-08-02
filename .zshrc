@@ -28,7 +28,6 @@ test "$TERM" = "screen" && export TERM=screen-256color
 
 export EDITOR=/usr/bin/nvim
 export GREP_COLOR='38;5;214;48;5;236'
-export RI="-Tf ansi -d doc"
 
 bindkey '\e[1;5D' emacs-backward-word
 bindkey '\e[1;5C' emacs-forward-word
@@ -86,7 +85,7 @@ function downloads()
 
 function fs()
 {
-    printf '\x1b]710;%s%d\x07' 'xft:Roboto Mono:size=' "$1"
+    printf '\x1b]710;%s%d\x07' 'xft:Droid Sans Mono:size=' "$1"
 }
 
 
@@ -139,20 +138,27 @@ function zsh_prompt()
 
     if [[ -n "$ref" ]]; then
 
+        local repo="$(git rev-parse --show-toplevel)"
+        local cwd="$(pwd)"
+
+        if [[ "$repo" = "$cwd" ]]; then
+            cwd=$cwd/
+        fi
+
         if [[ "$attached" = false ]]; then
             echo -n "%{$fg[red]%}"
-        elif [[ "$(git status --porcelain)" != "" ]]; then
+        elif [[ "$(git status 2> /dev/null | tail -n1)" != "nothing to commit, working directory clean" ]]; then
             echo -n "%{$fg[yellow]%}"
         else
             echo -n "%{$fg[green]%}"
         fi
 
         # Repository name @ branch
-        echo -n "[${ref#refs/heads/}] $(basename "$(git rev-parse --show-toplevel)")"
+        echo -n "[${ref#refs/heads/}] $(basename "$repo")"
         window_title="${window_title} [${ref#refs/heads/}]"
 
         # Internal path (relative to repository root)
-        echo -n "%{$fg[blue]%}/$(git rev-parse --show-prefix)"
+        echo -n "%{$fg[blue]%}${cwd#$repo}"
 
     else
 

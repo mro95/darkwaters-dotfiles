@@ -603,6 +603,14 @@ module Music
 
     def self.update
     end
+    def self.update2
+        s = TCPSocket.new 'localhost', 5704
+        json = s.gets
+        data = JSON.parse json
+        data.each do |key, value|
+            instance_variable_set :"@#{key}", value
+        end
+    end
 end
 
 System.systems.each(&:update)
