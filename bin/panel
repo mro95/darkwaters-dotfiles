@@ -6,20 +6,27 @@ Thread.abort_on_exception = true
 Object.send :remove_const, :Monitor # I'll need this tyvm
 
 module Icon
-    { "\ue00b" => :bluetooth,
-      "\ue015" => :clock,
-      "\ue01b" => :thermal,
-      "\ue026" => :load,
-      "\ue028" => :memory,
-      "\ue02e" => :information,
-      "\ue060" => :net_up,
-      "\ue061" => :net_down,
-      "\ue0fd" => :music,
-      "\ue214" => :battery,
-      "\ue215" => :battery_charging,
-      "\ue277" => :desktop_occupied,
-      "\ue278" => :desktop_free,
-      "\ue279" => :separator }
+    { "\uf294" => :bluetooth,
+      "\uf017" => :clock,
+      "\uf108" => :display,
+      "\uf06d" => :thermal,
+      "\uf085" => :load,
+      "\uf0e4" => :memory,
+      "\uf129" => :information,
+      "\uf0aa" => :net_up,
+      "\uf0ab" => :net_down,
+      "\uf001" => :music,
+      "\uf027" => :volume,
+      "\uf240" => :battery_full,
+      "\uf241" => :battery_three_quarters,
+      "\uf242" => :battery_half,
+      "\uf243" => :battery_quarter,
+      "\uf244" => :battery_critical,
+      "\uf0e7" => :battery_charging,
+      "\uf0c8" => :desktop_occupied,
+      "\uf096" => :desktop_free,
+      "\uf186" => :moon,
+      "\uf105" => :separator }
     .each_pair do |char, name|
         define_singleton_method(name) { char }
     end
@@ -206,8 +213,8 @@ class Panel
         @monitor_name = monitor.name
         @bar = open "|lemonbar -g #{monitor.geometry.width}x#{@height}+#{monitor.geometry.left}" +
                                 "+0" +
-                             " -f 'Droid Sans:size=10'" +
-                             " -f '-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1'" +
+		             " -f xft:Droid Sans Mono:size=8" +
+			     " -f FontAwesome" +
                              " -B '#eb1d1f21'", 'w+'
 
         @bar_read_thread = Thread.new do
@@ -306,7 +313,7 @@ class Panel
         value = Battery.value
         return if value.nil?
 
-        icon  = Battery.charging? ? Icon.battery_charging : Icon.battery
+        icon  = Battery.charging? ? Icon.battery_charging : Icon.battery_full
         text  = "#{value}%"
         color = Util.threshold value,
             0 => Color.blink(:red, :white),
