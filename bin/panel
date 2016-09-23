@@ -26,6 +26,7 @@ module Icon
       "\uf0c8" => :desktop_occupied,
       "\uf096" => :desktop_free,
       "\uf186" => :moon,
+      "\uf179" => :apple,
       "\uf105" => :separator }
     .each_pair do |char, name|
         define_singleton_method(name) { char }
@@ -213,9 +214,9 @@ class Panel
         @monitor_name = monitor.name
         @bar = open "|lemonbar -g #{monitor.geometry.width}x#{@height}+#{monitor.geometry.left}" +
                                 "+0" +
-		             " -f xft:Droid Sans Mono:size=8" +
+		             " -f xft:Droid Sans Mono" +
 			     " -f FontAwesome" +
-                             " -B '#eb1d1f21'", 'w+'
+                             " -B '#B41d1f21'", 'w+'
 
         @bar_read_thread = Thread.new do
             @bar.each_line do |n|
@@ -253,9 +254,9 @@ class Panel
         monitor.desktops.each do |desktop|
             draw "%{A:bspc desktop -f #{desktop.name}:}"
 
-            draw desktop.active? ? "%{F#efefef}"
+            draw desktop.active? ? "%{F#fcfeff}"
                : desktop.urgent? ? "%{F#ffaf00}"
-                                 : "%{F#707070}"
+                                 : "%{F#516790}"
 
             draw desktop.free? ? Icon.desktop_free
                                : Icon.desktop_occupied
@@ -401,6 +402,9 @@ class Panel
         draw '%{A}'
 
         show_now_playing = monitor.secondary? || !Monitor.secondary?
+
+        draw "%{A:lock:}#{Icon.apple} %{A}"
+        space 1
 
         desktops
         space 1
