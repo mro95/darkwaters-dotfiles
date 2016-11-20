@@ -1,5 +1,5 @@
 ! Xft settings
-Xft.dpi:        144
+Xft.dpi:        96
 Xft.antialias:  true
 Xft.lcdfilter:  lcddefault
 Xft.rgba:       rgb

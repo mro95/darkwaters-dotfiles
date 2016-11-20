@@ -63,6 +63,12 @@ super + Return
 super + r
     dmenu_launcher run
 
+super + x
+    oblogout
+
+super + alt+space
+    i3lock-fancy
+
 # make sxhkd reload its configuration files:
 super + Escape
     restart sxhkd
@@ -105,3 +111,15 @@ super + n
 
 super + i
     urxvtc -e irssi
+
+XF86MonBrightnessUp
+    brightness up
+
+XF86MonBrightnessDown
+    brightness down
+
+shift + XF86MonBrightnessUp
+    light -A 30
+
+shift + XF86MonBrightnessDown
+    light -U 5
