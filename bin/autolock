@@ -1,0 +1,9 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+    locktime=5
+else
+    locktime=$1
+fi
+killall xautolock;
+xautolock -time $locktime -locker i3lock-fancy &
+disown
