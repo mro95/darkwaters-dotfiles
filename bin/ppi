@@ -1,0 +1,2 @@
+#!/bin/bash
+f=$(echo $1"*"$PPIF | bc); printf "%.0f" $f;
