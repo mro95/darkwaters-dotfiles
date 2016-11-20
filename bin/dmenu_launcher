@@ -1,6 +1,5 @@
 #!/bin/bash
 
 screen=($(bspc query -m focused -T | json 'return this.rectangle' | grep -o '[[:digit:]]\+'))
-width=$(printf %.i $(echo "500 * $DPI_FACTOR" | bc -l))
-
+width=$(ppi 500)
 dmenu_run -w $width -x $((screen[2] / 2 - width / 2)) -y $((screen[3] * 50 / 100)) -l 10 -fn 'Droid Sans Mono-10' -p '$'
