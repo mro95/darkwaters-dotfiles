@@ -1,6 +1,6 @@
 [user]
-    name = Sam Lakerveld
-    email = dark@novaember.com
+    name = Maarten Oosting
+    email = maarten.tutoworld@gmail.com
 [core]
     editor = nvim
     excludesfile = /home/dark/.gitignore_global
