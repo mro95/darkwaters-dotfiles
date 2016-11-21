@@ -11,8 +11,8 @@ xset +fp ~/.fonts
 xset fp rehash
 
 # Configure X environment
-echo 'Xft.dpi:' $DPI | xrdb
-xrdb ~/.Xresources -merge
+xrdb ~/.Xresources
+echo 'Xft.dpi:' $PPI | xrdb -merge
 urxvtd -f -o
 
 compton --dbus &
