@@ -256,7 +256,7 @@ class Panel
 
             draw desktop.active? ? "%{F#fcfeff}"
                : desktop.urgent? ? "%{F#ffaf00}"
-                                 : "%{F#516790}"
+                                 : "%{F#aafcfeff}"
 
             draw desktop.free? ? Icon.desktop_free
                                : Icon.desktop_occupied
@@ -505,7 +505,7 @@ module Battery
     end
 
     def self.charging?
-        `acpi -a 2>/dev/null`['off-line'].nil?
+        `acpi -b 2>/dev/null`['Discharging'].nil?
     end
 end
 
