@@ -3,10 +3,11 @@
 MIXER=Master
 STEPS=16
 
-MAX=$(amixer sget "$MIXER" | grep 'Limits' | grep -o '[[:digit:]]*$')
+#MAX=$(amixer sget "$MIXER" | grep 'Limits' | grep -o '[[:digit:]]*$')
+MAX=100
 STEP=$((MAX / STEPS))
 
-VOLUME=$(($(amixer sget Master | grep -oEm 1 'Playback [[:digit:]]+ \[' | grep -oE '[[:digit:]]+')))
+VOLUME=$(pamixer --get-volume)
 
 if [[ "$1" = "up" ]]
 then
@@ -18,7 +19,7 @@ then
     let VOLUME-=$STEP
 fi
 
-amixer sset Master $VOLUME
+pamixer --set-volume $VOLUME
 
 SCREEN=($(bspc query -m focused -T | json 'return this.rectangle' | grep -o '[[:digit:]]\+'))
 
