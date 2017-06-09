@@ -1,6 +1,6 @@
 [user]
     name = Maarten Oosting
-    email = maarten.tutoworld@gmail.com
+    email = mail@maartenoosting.nl
 [core]
     editor = nvim
     excludesfile = /home/dark/.gitignore_global
