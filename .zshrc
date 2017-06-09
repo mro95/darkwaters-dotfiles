@@ -125,7 +125,8 @@ PROMPT='$(zsh_prompt)'
 #RPROMPT="%(?..%{$fg[red]%}%? ! %{$reset_color%})%{$fg_bold[black]%}$(hostname)  %T%{$reset_color%}"
 
 local return_code="%(?..%{$fg[red]%}-> %?\n)"
-local separator="%{$reset_color$fg[133]%}//%{$reset_color%}"
+local color_separator="\e[38;5;243m"
+local separator="%{$reset_color$color_separator%}//%{$reset_color%}"
 local time="%{$fg[yellow]%}%T"
 local user_host="%{$fg[green]%}%n@%m"
 local current_dir="%{$fg[blue]%}%~"
