@@ -122,13 +122,16 @@ local user_host='%{$fg[green]%}%n@%m%{$reset_color%}'
 local current_dir='%{$fg[blue]%}%~%{$reset_color%}'
 
 PROMPT='$(zsh_prompt)'
-RPROMPT="%(?..%{$fg[red]%}%? ! %{$reset_color%})%{$fg_bold[black]%}$(hostname)  %T%{$reset_color%}"
+#RPROMPT="%(?..%{$fg[red]%}%? ! %{$reset_color%})%{$fg_bold[black]%}$(hostname)  %T%{$reset_color%}"
 
+local return_code="%(?..%{$fg[red]%}-> %?\n)"
+local separator="%{$reset_color$fg[133]%}//%{$reset_color%}"
+local time="%{$fg[yellow]%}%T"
+local user_host="%{$fg[green]%}%n@%m"
+local current_dir="%{$fg[blue]%}%~"
 
-function zsh_prompt()
+function git_info() 
 {
-    window_title="${USER}@$(hostname): ${PWD}"
-
     local ref=$(git symbolic-ref HEAD 2> /dev/null)
     local attached=true
     if [[ -z "$ref" ]]; then
@@ -137,6 +140,8 @@ function zsh_prompt()
     fi
 
     if [[ -n "$ref" ]]; then
+
+        echo -n "$separator "
 
         local repo="$(git rev-parse --show-toplevel)"
         local cwd="$(pwd)"
@@ -154,21 +159,29 @@ function zsh_prompt()
         fi
 
         # Repository name @ branch
-        echo -n "[${ref#refs/heads/}] $(basename "$repo")"
-        window_title="${window_title} [${ref#refs/heads/}]"
+        #echo -n "[${ref#refs/heads/}] $(basename "$repo")"
+        echo -n "${ref#refs/heads/}"
+        #window_title="${window_title} [${ref#refs/heads/}]"
 
         # Internal path (relative to repository root)
-        echo -n "%{$fg[blue]%}${cwd#$repo}"
-
-    else
-
-        # Current working directory
-        echo -n "%{$fg[blue]%}%~"
-
+        #echo -n "%{$fg[blue]%}${cwd#$repo}"
     fi
+}
+
+
+function zsh_prompt()
+{
+    local line="%{$fg_bold[green]%(?..$fg_bold[red])%} ▎"
+    window_title="${USER}@$(hostname): ${PWD}"
+    echo -n "\n"
+
+    echo -n "%(?..$line %?\n)"
+
+    # Current working directory
+    echo "$line $time $separator $user_host $separator $current_dir $(git_info)"
 
     # Shell $ prompt sign
-    echo -n " %{$reset_color%}$ "
+    echo -n "$line %{$reset_color%}€ "
 
     # Bell and window title set
     echo -n "%{\a\e]0;$window_title\a%}"
