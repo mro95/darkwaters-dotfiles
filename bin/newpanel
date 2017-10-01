@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+require 'json'
+require 'socket'
+
+module MsgConsole
+    def self.desktops
+        JSON.parse(`i3-msg -t get_workspaces`, symbolize_names: true).map do |wobj|
+            Workspace.new wobj
+        end
+    end
+end
+
+class Workspace
+    attr_reader :focused, :name, :output
+    def initialize(wobj)
+        @focused = wobj[:focused]
+        @name = wobj[:name]
+        @output = wobj[:output]
+    end
+end
+
+class Panel
+    def initialize(workspaces)
+        @height = 25
+
+        @bar = open "|lemonbar -g #{monitor.geometry.width}x#{@height}+#{monitor.geometry.left}+0" +
+		            " -f 'Droid Sans:size=10'" +
+			        " -f FontAwesome" +
+                    " -B '#B41d1f21'", 'w+'
+
+        @bar_read_thread = Thread.new do
+            @bar.each_line do |n|
+                if n.chomp == 'QUIT'
+                    exit
+                end
+
+                system n.chomp
+            end
+        end
+
+        @drawing = false
+    end
+end
+
+workspaces = MsgConsole.desktops
+Panel.new(workspaces)

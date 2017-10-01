@@ -1,12 +1,12 @@
 ! Xft settings
-Xft.dpi:        96
+Xft.dpi:        140
 Xft.antialias:  true
 Xft.lcdfilter:  lcddefault
 Xft.rgba:       rgb
 Xft.hinting:    true
 Xft.hintstyle:  hintslight
 
-URxvt.font: xft:Droid Sans Mono:size=8
+URxvt.font: xft:Droid Sans Mono:size=9
 URxvt.letterSpace: -1
 
 *foreground: #d7d0c7

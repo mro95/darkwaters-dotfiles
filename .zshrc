@@ -2,7 +2,7 @@ HISTFILE=~/.zhistory
 HISTSIZE=10000
 SAVEHIST=100000
 
-export PATH=~/bin:~/dotfiles/bin:$PATH
+export PATH=~/bin:~/.bin:~/dotfiles/bin:$PATH
 
 if command -v cope_path > /dev/null; then
     export PATH=$(cope_path):$PATH

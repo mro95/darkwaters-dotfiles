@@ -109,9 +109,6 @@ super + l
 super + n
     urxvtc -e nvim
 
-super + i
-    urxvtc -e irssi
-
 XF86MonBrightnessUp
     brightness up
 

@@ -1,5 +1,5 @@
 [global]
-    font = Tamsyn 12
+    font = Droid Sans Mono 16
 
     # Allow a small subset of html markup:
     #   <b>bold</b>

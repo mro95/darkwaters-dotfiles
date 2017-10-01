@@ -9,9 +9,9 @@ module Icon
     { "\uf294" => :bluetooth,
       "\uf017" => :clock,
       "\uf108" => :display,
-      "\uf06d" => :thermal,
+      "\uf2c7" => :thermal,
       "\uf085" => :load,
-      "\uf0e4" => :memory,
+      "\uf2db" => :memory,
       "\uf129" => :information,
       "\uf0aa" => :net_up,
       "\uf0ab" => :net_down,
@@ -25,8 +25,8 @@ module Icon
       "\uf0e7" => :battery_charging,
       "\uf0c8" => :desktop_occupied,
       "\uf096" => :desktop_free,
-      "\uf186" => :moon,
-      "\uf20f" => :arch,
+      "\uf2ff" => :arch,
+      "\uf268" => :Chromium,
       "\uf105" => :separator }
     .each_pair do |char, name|
         define_singleton_method(name) { char }
@@ -67,8 +67,8 @@ end
 
 module Bspc
     def self.tree
-        JSON.parse(`bspc wm -d`, symbolize_names: true)[:monitors].map do |mobj|
-            Monitor.new mobj
+        JSON.parse(`i3-msg -t get_outputs`, symbolize_names: true).map do |mobj|
+            Monitor.new mobj unless mobj[:name] == 'xroot-0'
         end.sort
     end
 end
@@ -248,10 +248,19 @@ class Panel
     end
 
     def desktops
-        draw '%{A4:bspc desktop -f prev:}'
-        draw '%{A5:bspc desktop -f next:}'
+        #draw '%{A4:bspc desktop -f prev:}'
+        #draw '%{A5:bspc desktop -f next:}'
 
         monitor.desktops.each do |desktop|
+            
+            client = desktop.root[:client][:className] rescue nil
+            
+            icon = Icon.desktop_occupied
+            if client == "Chromium"
+                icon = Icon.Chromium
+            end
+            
+
             draw "%{A:bspc desktop -f #{desktop.name}:}"
 
             draw desktop.active? ? "%{F#fcfeff}"
@@ -259,12 +268,12 @@ class Panel
                                  : "%{F#aafcfeff}"
 
             draw desktop.free? ? Icon.desktop_free
-                               : Icon.desktop_occupied
+                               : icon
 
             draw " %{A}"
         end
 
-        draw '%{A}%{A}'
+        #draw '%{A}%{A}'
     end
 
     def active_window_title(limit_width = false)
@@ -315,6 +324,21 @@ class Panel
         return if value.nil?
 
         icon  = Battery.charging? ? Icon.battery_charging : Icon.battery_full
+        text  = "#{value}%"
+        color = Util.threshold value,
+            0 => Color.blink(:red, :white),
+           10 => Color.red,
+           30 => Color.yellow,
+           50 => Color.green
+
+        draw_system icon, text, color
+    end
+    
+    def mouse
+        value = Mouse.value
+        return if value.nil?
+
+        icon  = Mouse.charging? ? Icon.battery_charging : Icon.battery_full
         text  = "#{value}%"
         color = Util.threshold value,
             0 => Color.blink(:red, :white),
@@ -432,6 +456,7 @@ class Panel
             memory
             thermal
             battery
+            mouse
         end
 
         time(monitor.primary? && Monitor.secondary?)
@@ -507,6 +532,30 @@ module Battery
 
     def self.charging?
         `acpi -b 2>/dev/null`['Discharging'].nil?
+    end
+end
+
+module Mouse
+    include System
+    
+    @last_update = 0
+    @update_interval = 360
+    
+    system_reader :value
+
+    def self.update
+        return nil
+        value = `solaar show 1 | grep "Battery: "`[/([0-9]+)%/, 1]
+        if value.nil?
+            @update_interval = 360
+            @value = nil
+        else
+            @value = value.to_i
+        end
+    end
+    
+    def self.charging?
+        `solaar show 1 | grep "Battery: "`['discharging'].nil?
     end
 end
 
@@ -601,7 +650,7 @@ module Bluetooth
     system_reader :connected
 
     def self.update
-        @connected = `hcitool con`.lines.count > 1
+        #@connected = `hcitool con`.lines.count > 1
     end
 end
 
