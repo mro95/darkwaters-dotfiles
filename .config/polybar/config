@@ -1,0 +1,349 @@
+;=====================================================
+; Multiple polybars to get this style
+;=====================================================
+
+
+;=====================================================
+; Colors used later, change here to change colors
+; in a modular way
+;=====================================================
+[colors]
+
+; Note: #aarrggbb, omit for solid alpha #rrggbb
+
+main-bar-transparent-background = #B41d1f21
+main-bar-background = #B41d1f21
+;=====================================================
+
+;=====================================================
+; i3 colors and settings
+;=====================================================
+[i3_settings]
+focused_background   = #232323
+unfocused_background = #161616
+unfocused_alert      = #f4511e
+padding = 2
+ws_padding = 4
+;=====================================================
+
+;=====================================================
+; Fonts 
+;=====================================================
+[fonts]
+;font-0 = Material Design Icons:pixelsize=13;4
+;font-1 = FontAwesome:size=10;-2
+;font-2 = unifont:fontformat=truetype:size=8:antialias=false;0
+font-0 = Droid Sans:size=14;0
+font-1 = FontAwesome:size=14;0
+font-2 = Droid Sans:size=9;0
+;=====================================================
+
+;=====================================================
+; Main bar
+;=====================================================
+[bar/main]
+width  = 100%
+height = 35
+;radius = 1.0
+fixed-center = false
+
+background = ${colors.main-bar-transparent-background}
+
+underline-size = 2
+underline-color = #eee
+
+module-margin-left  = 0
+module-margin-right = 5
+
+font-0 = ${fonts.font-0}
+font-1 = ${fonts.font-1}
+font-2 = ${fonts.font-2}
+
+enable-ipc = true
+
+modules-left   = i3 xwindow
+modules-center = 
+#modules-right  = wlan eth volume xbacklight battery date
+modules-right  = eth volume date
+
+;wm-restack = i3
+;override-redirect = true
+
+tray-position    = right
+tray-padding     = 0 
+;tray-background  = ${colors.main-bar-background}
+
+bottom = false
+
+;override-redirect = true
+;wm-restack = i3
+
+;=====================================================
+
+
+;=====================================================
+; Module i3
+;=====================================================
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+
+enable-scroll = true
+
+;Only show workspaces on the same output as the bar
+pin-workspaces = true
+
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-default = 
+
+label-mode = %mode%
+label-mode-padding = 5
+label-mode-foreground = #ffffff
+
+
+label-focused = %icon% %{T3}%index%
+label-focused-background = #88000000
+label-focused-underline= #ddd
+label-focused-padding = ${i3_settings.ws_padding}
+
+label-unfocused = %icon% %{T3}%index%
+label-unfocused-padding = ${i3_settings.ws_padding}
+
+label-occupied = %icon% %{T3}%index%
+label-occupied-padding = ${i3_settings.ws_padding}
+
+label-urgent = %icon% %{T3}%index%
+label-urgent-padding = ${i3_settings.ws_padding}
+
+label-empty = %icon% %{T3}%index%
+label-empty-foreground = #44ffffff
+label-empty-padding = ${i3_settings.ws_padding}
+
+
+
+;=====================================================
+
+
+;=====================================================
+; Xwindow
+;=====================================================
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:120:...%
+label-padding = 4
+;=====================================================
+
+;=====================================================
+; Module MPD:
+; Music player
+;=====================================================
+[module/mpd]
+type = internal/mpd
+
+
+format-online	= <label-song><icon-prev><icon-stop><toggle><icon-next>
+
+icon-prev            = " "
+icon-prev-background = ${colors.main-bar-background}
+
+icon-stop						 = " "
+icon-stop-background = ${colors.main-bar-background}
+
+icon-play						 = " "
+icon-play-background = ${colors.main-bar-background}
+
+icon-pause            = " "
+icon-pause-background = ${colors.main-bar-background}
+
+icon-next            = "  "
+icon-next-background = ${colors.main-bar-background}
+
+label-song            = " %artist% - %title%" 
+label-song-maxlen     = 30
+label-song-ellipsis   = true
+label-song-background = ${colors.main-bar-background}
+;=====================================================
+
+
+;=====================================================
+; Module date and time
+;=====================================================
+[module/date]
+type = internal/date
+interval = 5
+
+; Format for date
+date = " %Y/%m/%d"
+
+; Format for time
+time = %H:%M:%S
+
+format-prefix						 = " "
+label						 = "%date% %time%"
+#label-background = ${colors.main-bar-background}
+;=====================================================
+
+
+;=====================================================
+; Module battery:
+; Shows information about the battery
+;=====================================================
+[module/battery]
+type = internal/battery
+
+; Use the following command to list batteries and adapters
+; $ ls -l /sys/class/power_supply
+battery = BAT0
+adapter = ADP0
+
+
+; Useful in case the battery never reports 100% charge
+full-at = 98
+
+; Time format (see "man date")
+time-format = %H:%M
+
+; Format when battery is charging
+format-charging						 = <animation-charging><label-charging>
+label-charging						 = " %percentage%% %time% "
+format-charging-background = ${colors.main-bar-background}
+label-charging-background  = ${colors.main-bar-background}
+
+; Format when battery is discharging
+format-discharging						= <ramp-capacity><label-discharging>
+label-discharging							= " %percentage%% %time% "
+format-discharging-background = ${colors.main-bar-background}
+label-discharging-background  = ${colors.main-bar-background}
+
+; Format when battery is fully charged
+format-full						 = <ramp-capacity><label-full>
+label-full						 = " Full "
+format-full-background = ${colors.main-bar-background}
+label-full-background  = ${colors.main-bar-background}
+
+ramp-capacity-0  = " "
+ramp-capacity-1  = " "
+ramp-capacity-2  = " "
+ramp-capacity-3  = " "
+ramp-capacity-4  = " "
+ramp-capacity-5  = " "
+ramp-capacity-6  = " "
+ramp-capacity-7  = " "
+ramp-capacity-8  = " "
+ramp-capacity-9  = " "
+ramp-capacity-10 = " "
+ramp-capacity-background = ${colors.main-bar-background}
+
+animation-charging-0 = " "
+animation-charging-1 = " "
+animation-charging-2 = " "
+animation-charging-3 = " "
+animation-charging-4 = " "
+animation-charging-5 = " "
+animation-charging-6 = " "
+animation-charging-framerate = 750
+animation-charging-background = ${colors.main-bar-background}
+;=====================================================
+
+
+;=====================================================
+; Module xbacklight:
+; Shows information about the defined output's
+; backlight level
+;=====================================================
+[module/xbacklight]
+type = internal/xbacklight
+enable-scroll = true
+
+format = <ramp><label> 
+
+; format label (if <label> is present)
+label            = " %percentage%% "
+label-background = ${colors.main-bar-background}
+
+; format ramp (if <ramp> is present)
+ramp-0 = " " 
+ramp-background = ${colors.main-bar-background}
+;=====================================================
+
+
+;=====================================================
+; Module volume
+;=====================================================
+[module/volume]
+type = internal/volume
+
+format-volume = <ramp-volume>  <label-volume>
+label-volume  = " %percentage%%"
+
+label-muted =   muted
+label-muted-foreground = #aaa
+format-volume-padding = 3
+format-muted-padding = 3
+
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+ramp-headphones-0 = 
+;=====================================================
+
+
+;=====================================================
+; Module wlan
+;=====================================================
+[module/wlan]
+type      = internal/network
+interface = wlp2s0
+interval  = 3.0
+
+; Don't show it if disconnected
+format-disconnected = 
+
+; When connected
+format-connected           = <ramp-signal><label-connected>
+label-connected            = " %local_ip% "
+label-connected-background = ${colors.main-bar-background}
+
+ramp-signal-0 = " "
+ramp-signal-background = ${colors.main-bar-background}
+;=====================================================
+
+
+;=====================================================
+; Module ethernet
+;=====================================================
+[module/eth]
+type = internal/network
+interface = enp0s31f6
+interval = 3.0
+
+format-packetloss = <animation-packetloss> <label-connected>
+label-packetloss = %essid%
+animation-packetloss-0 = ⚠
+animation-packetloss-0-foreground = #ffa64c
+animation-packetloss-1 = 📶
+animation-packetloss-1-foreground = #000000
+; Framerate in milliseconds
+animation-packetloss-framerate = 500
+
+; Don't show it if disconnected
+format-disconnected =
+
+
+label-connected-foreground = #00ff00
+label-connected					   = " E: %local_ip% "
+
+;=====================================================
+
+
+;=====================================================
+; Settings
+;=====================================================
+[settings]
+screenchange-reload = true
+;=====================================================
+
+
+; vim:ft=dosini
