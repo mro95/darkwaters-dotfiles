@@ -50,6 +50,8 @@ bindsym ctrl+Print exec screentool -s -u novaember
 bindsym ctrl+Break exec wp
 bindsym XF86AudioRaiseVolume exec volume up
 bindsym XF86AudioLowerVolume exec volume down
+bindsym XF86MonBrightnessUp exec brightness up
+bindsym XF86MonBrightnessDown exec brightness down
 
 # change focus
 bindsym $mod+h focus left
