@@ -9,6 +9,11 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
+#client.focused          #3F8AC2 #096BAA #00BAA7 #00DA8E
+#client.focused_inactive #333333 #5F676A #ffffff #484e50
+#client.unfocused        #333333 #424242 #888888 #292d2e
+#client.urgent           #C10004 #900000 #ffffff #900000
+
 
 set $mod Mod4
 
@@ -78,10 +83,10 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+alt+h split h
+bindsym $mod+Mod1+h split h
 
 # split in vertical orientation
-bindsym $mod+alt+v split v
+bindsym $mod+Mod1+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -90,6 +95,7 @@ bindsym $mod+f fullscreen toggle
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
+
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
